@@ -3,6 +3,8 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
+    "build": "tsc --noEmit && echo 'TypeScript check passed'",
+    "deploy": "echo 'Deploying to Railway...'",
     "cleanup": "bun run scripts/cleanup-orphaned-rooms.ts",
     "cleanup:live": "bun run scripts/cleanup-orphaned-rooms.ts --live",
     "test": "bun test",

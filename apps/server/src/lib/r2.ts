@@ -15,21 +15,36 @@ import sanitize from "sanitize-filename";
 config();
 
 const S3_CONFIG = {
-  BUCKET_NAME: process.env.S3_BUCKET_NAME!,
-  PUBLIC_URL: process.env.S3_PUBLIC_URL!,
-  ENDPOINT: process.env.S3_ENDPOINT!,
-  ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID!,
-  SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY!,
+  BUCKET_NAME: process.env.S3_BUCKET_NAME || '',
+  PUBLIC_URL: process.env.S3_PUBLIC_URL || '',
+  ENDPOINT: process.env.S3_ENDPOINT || '',
+  ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID || '',
+  SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY || '',
 };
 
-const r2Client = new S3Client({
+// Check if R2/S3 is configured
+const isR2Configured = () => {
+  return !!(S3_CONFIG.BUCKET_NAME && S3_CONFIG.ENDPOINT && S3_CONFIG.ACCESS_KEY_ID && S3_CONFIG.SECRET_ACCESS_KEY);
+};
+
+const r2Client = isR2Configured() ? new S3Client({
   region: "auto",
   endpoint: S3_CONFIG.ENDPOINT,
   credentials: {
     accessKeyId: S3_CONFIG.ACCESS_KEY_ID,
     secretAccessKey: S3_CONFIG.SECRET_ACCESS_KEY,
   },
-});
+}) : null;
+
+/**
+ * Check if R2 client is available
+ */
+function ensureR2Client() {
+  if (!r2Client) {
+    throw new Error("R2/S3 storage not configured");
+  }
+  return r2Client;
+}
 
 export interface AudioFileMetadata {
   roomId: string;
@@ -68,7 +83,7 @@ export async function generatePresignedUploadUrl(
     },
   });
 
-  return await getSignedUrl(r2Client, command, { expiresIn });
+  return await getSignedUrl(ensureR2Client(), command, { expiresIn });
 }
 
 /**
@@ -117,6 +132,12 @@ export async function validateAudioFileExists(
   audioUrl: string
 ): Promise<boolean> {
   try {
+    // Check if R2 is configured
+    if (!r2Client) {
+      console.log("R2/S3 storage not configured - cannot validate file");
+      return false;
+    }
+
     // Extract the key from the public URL
     const key = extractKeyFromUrl(audioUrl);
 
@@ -201,6 +222,11 @@ export async function listObjectsWithPrefix(
   prefix: string,
   options: { includeFolders?: boolean } = {}
 ) {
+  if (!isR2Configured() || !r2Client) {
+    console.warn('R2/S3 storage not configured - returning empty list');
+    return [];
+  }
+
   try {
     const listCommand = new ListObjectsV2Command({
       Bucket: S3_CONFIG.BUCKET_NAME,
@@ -211,16 +237,16 @@ export async function listObjectsWithPrefix(
 
     if (options.includeFolders) {
       // Return all objects including folders
-      return listResponse.Contents?.filter((obj) => obj.Key);
+      return listResponse.Contents?.filter((obj) => obj.Key) || [];
     } else {
       // Filter out folder objects (GCS creates these, R2 doesn't)
       return listResponse.Contents?.filter(
         (obj) => obj.Key && !obj.Key.endsWith("/") && obj.Size && obj.Size > 0
-      );
+      ) || [];
     }
   } catch (error) {
     console.error(`Failed to list objects with prefix "${prefix}":`, error);
-    throw error;
+    return [];
   }
 }
 
@@ -230,6 +256,11 @@ export async function listObjectsWithPrefix(
 async function deleteBatchObjects(
   objects: { Key: string }[]
 ): Promise<{ deletedCount: number; errors: string[] }> {
+  if (!r2Client) {
+    console.log("R2/S3 storage not configured - skipping batch delete");
+    return { deletedCount: 0, errors: [] };
+  }
+
   let deletedCount = 0;
   const errors: string[] = [];
 
@@ -369,6 +400,10 @@ export async function uploadFile(
   roomId: string,
   fileName: string
 ): Promise<string> {
+  if (!r2Client) {
+    throw new Error("R2/S3 storage not configured - cannot upload file");
+  }
+
   const key = createKey(roomId, fileName);
 
   // Read file with Bun - it automatically detects content type
@@ -398,6 +433,10 @@ export async function uploadBytes(
   fileName: string,
   contentType: string = "audio/mpeg"
 ): Promise<string> {
+  if (!r2Client) {
+    throw new Error("R2/S3 storage not configured - cannot upload bytes");
+  }
+
   const key = createKey(roomId, fileName);
 
   // Convert ArrayBuffer to Uint8Array if needed
@@ -421,6 +460,11 @@ export async function uploadBytes(
  * Upload JSON data to R2
  */
 export async function uploadJSON(key: string, data: object): Promise<void> {
+  if (!r2Client) {
+    console.log("🔄 R2/S3 storage not configured - skipping backup upload");
+    return;
+  }
+
   const jsonData = JSON.stringify(data, null, 2);
 
   const command = new PutObjectCommand({
@@ -437,6 +481,11 @@ export async function uploadJSON(key: string, data: object): Promise<void> {
  * Download and parse JSON data from R2
  */
 export async function downloadJSON<T = any>(key: string): Promise<T | null> {
+  if (!r2Client) {
+    console.log("🔄 R2/S3 storage not configured - skipping download");
+    return null;
+  }
+  
   try {
     const command = new GetObjectCommand({
       Bucket: S3_CONFIG.BUCKET_NAME,
@@ -485,6 +534,11 @@ export async function getLatestFileWithPrefix(
  * Delete a single object from R2
  */
 export async function deleteObject(key: string): Promise<void> {
+  if (!r2Client) {
+    console.log("🔄 R2/S3 storage not configured - skipping delete");
+    return;
+  }
+
   const command = new DeleteObjectCommand({
     Bucket: S3_CONFIG.BUCKET_NAME,
     Key: key,
@@ -545,6 +599,12 @@ export async function cleanupOrphanedRooms(
   };
 
   try {
+    // Check if R2 is configured - if not, skip cleanup
+    if (!isR2Configured()) {
+      console.log("  ✅ R2/S3 storage not configured. Skipping orphaned room cleanup.");
+      return result;
+    }
+
     // Validate R2 configuration
     const r2Config = validateR2Config();
     if (!r2Config.isValid) {

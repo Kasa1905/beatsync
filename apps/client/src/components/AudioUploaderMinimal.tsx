@@ -2,7 +2,7 @@
 
 import { uploadAudioFile } from "@/lib/api";
 import { cn, trimFileName } from "@/lib/utils";
-import { useCanMutate } from "@/store/global";
+import { useCanMutate, useGlobalStore } from "@/store/global";
 import { useRoomStore } from "@/store/room";
 import { CloudUpload, Plus } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
@@ -36,11 +36,42 @@ export const AudioUploaderMinimal = () => {
     try {
       setIsUploading(true);
 
-      // Upload the file to the server as binary
-      await uploadAudioFile({
-        file,
-        roomId,
-      });
+      // Try cloud upload first, fallback to local if S3 not configured
+      try {
+        await uploadAudioFile({
+          file,
+          roomId,
+        });
+        
+        toast.success(`${trimFileName(file.name)} uploaded successfully!`);
+      } catch (cloudError) {
+        console.warn("Cloud upload failed, falling back to local file:", cloudError);
+        
+        // Create local object URL for the file
+        const localUrl = URL.createObjectURL(file);
+        console.log("Created local URL:", localUrl);
+        
+        // Add local file to the audio sources using the proper store method
+        const currentSources = useGlobalStore.getState().audioSources.map(as => as.source);
+        const newSource = { url: localUrl };
+        
+        console.log("Current sources:", currentSources);
+        console.log("Adding new source:", newSource);
+        
+        // Use the store's handler to properly add the new source
+        useGlobalStore.getState().handleSetAudioSources({
+          type: "SET_AUDIO_SOURCES",
+          sources: [...currentSources, newSource],
+          currentAudioSource: undefined
+        });
+        
+        // Verify the source was added
+        const updatedSources = useGlobalStore.getState().audioSources;
+        console.log("Updated audio sources:", updatedSources);
+        
+        toast.success(`${trimFileName(file.name)} ready for local playback!`);
+        console.log("Local file URL created and added to queue:", localUrl);
+      }
 
       // Track successful upload
       posthog.capture("upload_success", {

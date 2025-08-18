@@ -30,6 +30,13 @@ export const metadata: Metadata = {
   authors: [{ name: "Freeman Jiang" }],
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -50,6 +57,52 @@ export default function RootLayout({
             <Analytics />
           </TQProvider>
         </PostHogProvider>
+        
+        {/* Service Worker Registration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                      console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                      console.log('SW registration failed: ', registrationError);
+                    });
+                });
+              }
+            `,
+          }}
+        />
+        
+        {/* Performance monitoring */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Monitor performance and adapt quality
+              if ('performance' in window) {
+                let frameCount = 0;
+                let lastTime = performance.now();
+                
+                function measureFPS() {
+                  frameCount++;
+                  const now = performance.now();
+                  if (now >= lastTime + 1000) {
+                    const fps = frameCount * 1000 / (now - lastTime);
+                    // Store FPS for audio quality adaptation
+                    window.__beatsync_fps = fps;
+                    frameCount = 0;
+                    lastTime = now;
+                  }
+                  requestAnimationFrame(measureFPS);
+                }
+                requestAnimationFrame(measureFPS);
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

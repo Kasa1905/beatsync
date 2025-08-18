@@ -44,8 +44,9 @@ export function InlineSearch() {
   // Cleanup timeout on unmount
   React.useEffect(() => {
     return () => {
-      if (blurTimeoutRef.current) {
-        clearTimeout(blurTimeoutRef.current);
+      const currentTimeout = blurTimeoutRef.current;
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
       }
     };
   }, []);

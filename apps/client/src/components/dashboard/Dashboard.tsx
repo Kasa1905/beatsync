@@ -1,9 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGlobalStore } from "@/store/global";
-import { Library, ListMusic, Rotate3D } from "lucide-react";
+import { Library, ListMusic, Rotate3D, Activity, MonitorSpeaker } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { TopBar } from "../room/TopBar";
 import { SyncProgress } from "../ui/SyncProgress";
+import { AudioMonitoringDashboard } from "../room/AudioMonitoringDashboard";
+import { SystemAudioStreamer } from "../room/SystemAudioStreamer";
 import { Bottom } from "./Bottom";
 import { Left } from "./Left";
 import { Main } from "./Main";
@@ -62,24 +64,36 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
               className="flex-1 flex flex-col overflow-hidden min-h-0"
             >
               {/* Tab List at the top for mobile */}
-              <TabsList className="shrink-0 grid w-full grid-cols-3 h-12 rounded-none p-0 bg-gradient-to-r from-neutral-950 via-neutral-900 to-neutral-950">
+              <TabsList className="shrink-0 grid w-full grid-cols-5 h-12 rounded-none p-0 bg-gradient-to-r from-neutral-950 via-neutral-900 to-neutral-950">
                 <TabsTrigger
                   value="library"
                   className="flex-1 data-[state=active]:bg-white/5 data-[state=active]:shadow-none rounded-none text-xs h-full gap-1 text-neutral-400 data-[state=active]:text-white transition-all duration-200"
                 >
-                  <Library size={16} /> Session
+                  <Library size={14} /> Session
                 </TabsTrigger>
                 <TabsTrigger
                   value="queue"
                   className="flex-1 data-[state=active]:bg-white/5 data-[state=active]:shadow-none rounded-none text-xs h-full gap-1 text-neutral-400 data-[state=active]:text-white transition-all duration-200"
                 >
-                  <ListMusic size={16} /> Music
+                  <ListMusic size={14} /> Music
                 </TabsTrigger>
                 <TabsTrigger
                   value="spatial"
                   className="flex-1 data-[state=active]:bg-white/5 data-[state=active]:shadow-none rounded-none text-xs h-full gap-1 text-neutral-400 data-[state=active]:text-white transition-all duration-200"
                 >
-                  <Rotate3D size={16} /> Spatial
+                  <Rotate3D size={14} /> Spatial
+                </TabsTrigger>
+                <TabsTrigger
+                  value="stream"
+                  className="flex-1 data-[state=active]:bg-white/5 data-[state=active]:shadow-none rounded-none text-xs h-full gap-1 text-neutral-400 data-[state=active]:text-white transition-all duration-200"
+                >
+                  <MonitorSpeaker size={14} /> Stream
+                </TabsTrigger>
+                <TabsTrigger
+                  value="monitor"
+                  className="flex-1 data-[state=active]:bg-white/5 data-[state=active]:shadow-none rounded-none text-xs h-full gap-1 text-neutral-400 data-[state=active]:text-white transition-all duration-200"
+                >
+                  <Activity size={14} /> Monitor
                 </TabsTrigger>
               </TabsList>
 
@@ -128,6 +142,36 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                     className="h-full"
                   >
                     <Right className="flex h-full w-full" />
+                  </motion.div>
+                </TabsContent>
+                <TabsContent
+                  key="stream"
+                  value="stream"
+                  className="flex-1 overflow-y-auto mt-0 min-h-0"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full p-4 space-y-4"
+                  >
+                    <SystemAudioStreamer />
+                  </motion.div>
+                </TabsContent>
+                <TabsContent
+                  key="monitor"
+                  value="monitor"
+                  className="flex-1 overflow-y-auto mt-0 min-h-0"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="h-full p-4"
+                  >
+                    <AudioMonitoringDashboard />
                   </motion.div>
                 </TabsContent>
               </AnimatePresence>

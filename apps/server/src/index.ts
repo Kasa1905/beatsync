@@ -30,6 +30,19 @@ const server = Bun.serve<WSData, undefined>({
         case "/":
           return handleRoot(req);
 
+        case "/health":
+          return new Response(JSON.stringify({ 
+            status: "healthy", 
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            version: "1.0.0"
+          }), {
+            headers: { 
+              "Content-Type": "application/json",
+              ...corsHeaders 
+            }
+          });
+
         case "/ws":
           return handleWebSocketUpgrade(req, server);
 

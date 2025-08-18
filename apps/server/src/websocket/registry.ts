@@ -7,6 +7,9 @@ import { handleSetAdmin } from "./handlers/handleSetAdmin";
 import { handleSetGlobalVolume } from "./handlers/setGlobalVolume";
 import { handleSetPlaybackControls } from "./handlers/handleSetPlaybackControls";
 import { handleStreamMusic } from "./handlers/handleStreamMusic";
+import { handleStartAudioStream } from "./handlers/handleStartAudioStream";
+import { handleStopAudioStream } from "./handlers/handleStopAudioStream";
+import { handleStreamAudioChunk } from "./handlers/handleStreamAudioChunk";
 import { handleMoveClient } from "./handlers/moveClient";
 import { handleNTPRequest } from "./handlers/ntpRequest";
 import { handlePause } from "./handlers/pause";
@@ -101,5 +104,20 @@ export const WS_REGISTRY: WebsocketRegistry = {
   [ClientActionEnum.enum.SET_GLOBAL_VOLUME]: {
     handle: handleSetGlobalVolume,
     description: "Set global volume for all clients in the room",
+  },
+
+  [ClientActionEnum.enum.START_AUDIO_STREAM]: {
+    handle: handleStartAudioStream,
+    description: "Start real-time audio streaming",
+  },
+
+  [ClientActionEnum.enum.STOP_AUDIO_STREAM]: {
+    handle: handleStopAudioStream,
+    description: "Stop real-time audio streaming",
+  },
+
+  [ClientActionEnum.enum.STREAM_AUDIO_CHUNK]: {
+    handle: handleStreamAudioChunk,
+    description: "Relay audio chunk to other room participants",
   },
 };

@@ -11,10 +11,24 @@ https://github.com/user-attachments/assets/2aa385a7-2a07-4ab5-80b1-fda553efc57b
 - **Spatial audio:** Allows controlling device volumes through a virtual listening source for interesting sonic effects
 - **Polished interface**: Smooth loading states, status indicators, and all UI elements come built-in
 - **Self-hostable**: Run your own instance with a few commands
-
+- **Performance optimized**: Network-aware features, mobile-first PWA, offline support
+- **Production ready**: Comprehensive deployment configurations included
 
 > [!NOTE]
 > Beatsync is in early development. Mobile support is working, but experimental. Please consider creating an issue or contributing with a PR if you run into problems!
+
+## 🚀 Quick Deploy (Free)
+
+Deploy your own BeatSync instance for free in 10 minutes:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/beatsync&env=NEXT_PUBLIC_SERVER_URL,NEXT_PUBLIC_WS_URL)
+
+**[📖 Full Deployment Guide](./DEPLOY_NOW.md)** - Step-by-step instructions
+
+### Deployment Options:
+- **🌐 Frontend**: Vercel (Free tier: 100GB bandwidth)
+- **🔧 Backend**: Railway (Free tier: $5 monthly credit)
+- **💾 Storage**: Cloudflare R2 (Optional, free tier available)
 
 ## Quickstart
 

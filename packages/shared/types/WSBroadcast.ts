@@ -32,12 +32,31 @@ const SetAudioSourcesSchema = z.object({
 });
 export type SetAudioSourcesType = z.infer<typeof SetAudioSourcesSchema>;
 
+// Audio streaming events
+const AudioStreamStartedSchema = z.object({
+  type: z.literal("AUDIO_STREAM_STARTED"),
+  userId: z.string(),
+  username: z.string(),
+  streamType: z.enum(["system", "mic"]),
+  quality: z.enum(["low", "medium", "high"]),
+  timestamp: z.number(),
+});
+
+const AudioStreamStoppedSchema = z.object({
+  type: z.literal("AUDIO_STREAM_STOPPED"),
+  userId: z.string(),
+  username: z.string(),
+  timestamp: z.number(),
+});
+
 const RoomEventSchema = z.object({
   type: z.literal("ROOM_EVENT"),
   event: z.discriminatedUnion("type", [
     ClientChangeMessageSchema,
     SetAudioSourcesSchema,
     SetPlaybackControlsSchema,
+    AudioStreamStartedSchema,
+    AudioStreamStoppedSchema,
   ]),
 });
 
@@ -71,6 +90,20 @@ const StreamJobUpdateSchema = z.object({
 });
 export type StreamJobUpdateType = z.infer<typeof StreamJobUpdateSchema>;
 
+// Audio chunk for real-time streaming
+const AudioChunkSchema = z.object({
+  type: z.literal("AUDIO_CHUNK"),
+  data: z.object({
+    userId: z.string(),
+    username: z.string(),
+    audioData: z.array(z.number()), // PCM audio data
+    sampleRate: z.number(),
+    channelCount: z.number(),
+    timestamp: z.number(),
+  }),
+});
+export type AudioChunkType = z.infer<typeof AudioChunkSchema>;
+
 export const ScheduledActionSchema = z.object({
   type: z.literal("SCHEDULED_ACTION"),
   serverTimeToExecute: z.number(),
@@ -88,5 +121,6 @@ export const WSBroadcastSchema = z.discriminatedUnion("type", [
   ScheduledActionSchema,
   RoomEventSchema,
   StreamJobUpdateSchema,
+  AudioChunkSchema,
 ]);
 export type WSBroadcastType = z.infer<typeof WSBroadcastSchema>;

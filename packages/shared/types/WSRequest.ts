@@ -29,6 +29,9 @@ export const ClientActionEnum = z.enum([
   "SEARCH_MUSIC", // Search for music
   "STREAM_MUSIC", // Stream music
   "SET_GLOBAL_VOLUME", // Set global volume for all clients
+  "START_AUDIO_STREAM", // Start real-time audio streaming
+  "STOP_AUDIO_STREAM", // Stop real-time audio streaming
+  "STREAM_AUDIO_CHUNK", // Send audio data chunk
 ]);
 
 export const NTPRequestPacketSchema = z.object({
@@ -131,6 +134,27 @@ export const SetGlobalVolumeSchema = z.object({
   volume: z.number().min(0).max(1), // 0-1 range
 });
 
+export const StartAudioStreamSchema = z.object({
+  type: z.literal(ClientActionEnum.enum.START_AUDIO_STREAM),
+  roomId: z.string(),
+  streamType: z.enum(["system", "mic"]),
+  quality: z.enum(["low", "medium", "high"]),
+});
+
+export const StopAudioStreamSchema = z.object({
+  type: z.literal(ClientActionEnum.enum.STOP_AUDIO_STREAM),
+  roomId: z.string(),
+});
+
+export const StreamAudioChunkSchema = z.object({
+  type: z.literal(ClientActionEnum.enum.STREAM_AUDIO_CHUNK),
+  roomId: z.string(),
+  audioData: z.array(z.number()), // PCM audio data as Float32Array
+  sampleRate: z.number(),
+  channelCount: z.number(),
+  timestamp: z.number(),
+});
+
 export const WSRequestSchema = z.discriminatedUnion("type", [
   PlayActionSchema,
   PauseActionSchema,
@@ -149,6 +173,9 @@ export const WSRequestSchema = z.discriminatedUnion("type", [
   SearchMusicSchema,
   StreamMusicSchema,
   SetGlobalVolumeSchema,
+  StartAudioStreamSchema,
+  StopAudioStreamSchema,
+  StreamAudioChunkSchema,
 ]);
 export type WSRequestType = z.infer<typeof WSRequestSchema>;
 export type PlayActionType = z.infer<typeof PlayActionSchema>;
