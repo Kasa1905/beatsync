@@ -7,7 +7,8 @@ export const handleStreamAudioChunk: HandlerFunction<
 > = async ({ ws, message, server }) => {
   const { roomId, audioData, sampleRate, channelCount, timestamp } = message;
   
-  // Forward the audio chunk to all other users in the room (excluding sender)
+  // Forward the audio chunk to all other users in the room
+  // Note: Bun's publish automatically excludes the sender WebSocket
   sendBroadcast({
     server,
     roomId,
@@ -22,6 +23,5 @@ export const handleStreamAudioChunk: HandlerFunction<
         timestamp,
       },
     },
-    excludeWs: ws, // Don't send back to the sender
   });
 };
