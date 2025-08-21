@@ -5,7 +5,6 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { SOCIAL_LINKS } from "@/constants";
 import { fetchActiveRooms } from "@/lib/api";
 import { generateName } from "@/lib/randomNames";
 import { validateFullRoomId, validatePartialRoomId } from "@/lib/room";
@@ -17,7 +16,6 @@ import { useRouter } from "next/navigation";
 import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FaDiscord, FaGithub } from "react-icons/fa";
 import { toast } from "sonner";
 
 interface JoinFormData {
@@ -347,32 +345,6 @@ export const Join = () => {
           />
 
           {/* Social links */}
-          <motion.div
-            className="flex items-center gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
-          >
-            <a
-              href={SOCIAL_LINKS.discord}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors text-xs"
-            >
-              <FaDiscord className="size-[17px]" />
-              <span>Join Community</span>
-            </a>
-            <div className="w-px h-4 bg-neutral-700" />
-            <a
-              href={SOCIAL_LINKS.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors text-xs"
-            >
-              <FaGithub className="size-4" />
-              <span>GitHub</span>
-            </a>
-          </motion.div>
         </motion.div>
       </div>
     </motion.div>

@@ -1,6 +1,5 @@
 "use client";
 
-import { SOCIAL_LINKS } from "@/constants";
 import { MAX_NTP_MEASUREMENTS, useGlobalStore } from "@/store/global";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
@@ -244,18 +243,7 @@ export const SyncProgress = ({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.3 }}
           >
-            {
-              "You might have a spotty connection or a new deployment is in progress. If this issue persists, please report it on the "
-            }
-            <a
-              href={SOCIAL_LINKS.discord}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary/75 underline"
-            >
-              Discord
-            </a>
-            .
+            You might have a spotty connection or a new deployment is in progress. If this issue persists, please check your network connection.
           </motion.p>
         </motion.div>
       </OuterModal>

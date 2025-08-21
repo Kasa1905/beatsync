@@ -6,7 +6,6 @@ import { useGlobalStore } from "@/store/global";
 import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum } from "@beatsync/shared";
 import { 
-  Mic, 
   Monitor, 
   Smartphone, 
   Wifi, 
@@ -30,7 +29,6 @@ interface SystemAudioStreamingProps {
 
 interface DeviceSupport {
   screenCapture: boolean;
-  microphone: boolean;
   audioWorklet: boolean;
   webAudio: boolean;
 }
@@ -254,17 +252,6 @@ export const SystemAudioStreaming = ({ className }: SystemAudioStreamingProps) =
                   )}
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="flex items-center gap-1">
-                    <Mic className="h-3 w-3" />
-                    Microphone
-                  </span>
-                  {deviceSupport.microphone ? (
-                    <CheckCircle className="h-3 w-3 text-green-500" />
-                  ) : (
-                    <AlertCircle className="h-3 w-3 text-red-500" />
-                  )}
-                </div>
-                <div className="flex items-center justify-between text-xs">
                   <span>Audio Worklet</span>
                   {deviceSupport.audioWorklet ? (
                     <CheckCircle className="h-3 w-3 text-green-500" />
@@ -293,7 +280,7 @@ export const SystemAudioStreaming = ({ className }: SystemAudioStreamingProps) =
                   {streamingMethod && (
                     <div className="text-xs">
                       Method: <Badge variant="outline" className="text-xs">
-                        {streamingMethod === 'screen' ? 'Screen Audio' : 'Microphone'}
+                        Screen Audio Capture
                       </Badge>
                     </div>
                   )}

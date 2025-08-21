@@ -1,9 +1,10 @@
 export const validatePartialRoomId = (roomId: string) => {
-  return /^\d*$/.test(roomId);
+  return /^[a-zA-Z0-9]*$/.test(roomId);
 };
 
 export const validateFullRoomId = (roomId: string) => {
-  return /^[0-9]{6}$/.test(roomId);
+  // Allow alphanumeric room IDs with 3-12 characters for testing flexibility
+  return /^[a-zA-Z0-9]{3,12}$/.test(roomId);
 };
 
 export const createUserId = () => {

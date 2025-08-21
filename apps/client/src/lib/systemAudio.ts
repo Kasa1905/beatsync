@@ -1,17 +1,16 @@
 /**
  * Universal System Audio Streaming Manager
- * 
- * Supports:
- * - Desktop: Chrome, Edge, Firefox, Safari (screen capture with audio)
- * - Mobile: iOS Safari, Chrome Mobile, Android Chrome (microphone fallback)
- * - OS: Windows, macOS, Linux, iOS, Android
+ * Supports screen capture audio across multiple platforms and browsers:
+ * - Desktop: Chrome, Firefox, Edge, Safari, Brave (screen capture with audio)
+ * - Screen audio capture (primary method for desktop browsers)
  * 
  * Features:
- * - Screen audio capture (Chromium browsers)
- * - Microphone capture (fallback for all browsers)
- * - Audio worklet processing for low latency
- * - Real-time streaming via WebSocket
- * - Adaptive quality based on network conditions
+ * - WebAudio API with AudioWorklet support
+ * - Real-time audio processing and streaming
+ * - Cross-platform device detection
+ * - TypeScript strict mode compliance
+ *
+ * Note: Chat communication is available for coordination instead of microphone.
  */
 
 export interface DeviceInfo {
@@ -19,7 +18,6 @@ export interface DeviceInfo {
   os: 'iOS' | 'Android' | 'Windows' | 'macOS' | 'Linux' | 'unknown';
   browser: 'Chrome' | 'Safari' | 'Firefox' | 'Edge' | 'Brave' | 'unknown';
   supportsScreenCapture: boolean;
-  supportsMicrophone: boolean;
   supportsAudioWorklet: boolean;
   mediaDevices: boolean;
 }
@@ -115,7 +113,6 @@ export class UniversalSystemAudioManager {
     
     // Feature detection
     const supportsScreenCapture = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
-    const supportsMicrophone = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     const supportsAudioWorklet = !!(window.AudioContext && AudioContext.prototype.audioWorklet);
     const mediaDevices = !!navigator.mediaDevices;
     
@@ -124,18 +121,26 @@ export class UniversalSystemAudioManager {
       os,
       browser,
       supportsScreenCapture,
-      supportsMicrophone,
       supportsAudioWorklet,
       mediaDevices
     };
   }
 
   /**
-   * Start system audio streaming with the best available method
+   * Start system audio streaming with screen capture only
    */
   async startSystemAudioStream(): Promise<boolean> {
     try {
       console.log('🎵 Starting Universal System Audio Stream...', this.deviceInfo);
+
+      // Check if screen capture is supported
+      if (!this.deviceInfo.supportsScreenCapture) {
+        throw new Error('Screen audio capture not supported on this device. Please use a desktop browser with screen sharing capabilities.');
+      }
+
+      if (this.deviceInfo.deviceType === 'mobile') {
+        throw new Error('Screen audio capture not available on mobile devices. Please use a desktop browser.');
+      }
 
       // Initialize audio context
       this.audioContext = new (window.AudioContext || (window as { webkitAudioContext?: AudioContext }).webkitAudioContext!)({
@@ -143,17 +148,9 @@ export class UniversalSystemAudioManager {
         latencyHint: 'interactive'
       });
 
-      let stream: MediaStream;
-
-      // Try screen capture with audio first (best quality)
-      if (this.deviceInfo.supportsScreenCapture && this.deviceInfo.deviceType !== 'mobile') {
-        stream = await this.getScreenAudioStream();
-        console.log('✅ Using screen audio capture');
-      } else {
-        // Fallback to microphone
-        stream = await this.getMicrophoneStream();
-        console.log('✅ Using microphone fallback');
-      }
+      // Get screen audio stream
+      const stream = await this.getScreenAudioStream();
+      console.log('✅ Using screen audio capture');
 
       this.mediaStream = stream;
       this.source = this.audioContext.createMediaStreamSource(stream);
@@ -170,9 +167,8 @@ export class UniversalSystemAudioManager {
 
     } catch (error) {
       console.error('❌ Failed to start system audio stream:', error);
-      
-      // Try alternative methods
-      return await this.tryFallbackMethods();
+      this.stopSystemAudioStream();
+      throw error;
     }
   }
 
@@ -195,23 +191,6 @@ export class UniversalSystemAudioManager {
     if (audioTracks.length === 0) {
       throw new Error('No audio track in screen capture');
     }
-
-    return stream;
-  }
-
-  /**
-   * Get microphone stream (fallback for all browsers)
-   */
-  private async getMicrophoneStream(): Promise<MediaStream> {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: this.config.enableEchoCancellation,
-        noiseSuppression: this.config.enableNoiseSuppression,
-        sampleRate: this.config.sampleRate,
-        channelCount: this.config.channels
-      },
-      video: false
-    });
 
     return stream;
   }
@@ -300,35 +279,6 @@ export class UniversalSystemAudioManager {
   }
 
   /**
-   * Try fallback methods for problematic browsers/devices
-   */
-  private async tryFallbackMethods(): Promise<boolean> {
-    console.log('🔄 Trying fallback methods...');
-
-    try {
-      // Method 1: Basic microphone with minimal constraints
-      const basicStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false
-      });
-
-      this.mediaStream = basicStream;
-      
-      if (this.audioContext) {
-        this.source = this.audioContext.createMediaStreamSource(basicStream);
-        this.initializeScriptProcessor();
-        this.isStreaming = true;
-        console.log('✅ Fallback method successful');
-        return true;
-      }
-    } catch (error) {
-      console.error('❌ All fallback methods failed:', error);
-    }
-
-    return false;
-  }
-
-  /**
    * Stop the audio stream
    */
   stopSystemAudioStream(): void {
@@ -389,13 +339,11 @@ export class UniversalSystemAudioManager {
    */
   static async checkSupport(): Promise<{
     screenCapture: boolean;
-    microphone: boolean;
     audioWorklet: boolean;
     webAudio: boolean;
   }> {
     const support = {
       screenCapture: false,
-      microphone: false,
       audioWorklet: false,
       webAudio: false
     };
@@ -412,14 +360,6 @@ export class UniversalSystemAudioManager {
 
     // Check screen capture
     support.screenCapture = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
-
-    // Check microphone
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      support.microphone = devices.some(device => device.kind === 'audioinput');
-    } catch {
-      support.microphone = false;
-    }
 
     return support;
   }

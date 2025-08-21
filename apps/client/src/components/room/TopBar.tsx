@@ -1,10 +1,8 @@
 "use client";
-import { SOCIAL_LINKS } from "@/constants";
 import { MAX_NTP_MEASUREMENTS, useGlobalStore } from "@/store/global";
 import { Crown, Hash, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { FaDiscord, FaGithub } from "react-icons/fa";
 import { SyncProgress } from "../ui/SyncProgress";
 
 interface TopBarProps {
@@ -105,27 +103,6 @@ export const TopBar = ({ roomId }: TopBarProps) => {
               RTT: <span>{roundTripEstimate.toFixed(2)}</span>ms
             </span>
           </div>
-        </div>
-
-        <div className="flex items-center justify-center gap-2.5">
-          {/* Discord icon */}
-          <a
-            href={SOCIAL_LINKS.discord}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-neutral-400 hover:text-white transition-colors"
-          >
-            <FaDiscord className="size-[17px]" />
-          </a>
-          {/* GitHub icon in the top right */}
-          <a
-            href={SOCIAL_LINKS.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-neutral-400 hover:text-white transition-colors"
-          >
-            <FaGithub className="size-4" />
-          </a>
         </div>
       </div>
     );
