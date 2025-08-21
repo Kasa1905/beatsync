@@ -5,6 +5,7 @@ import { useRoomStore } from "@/store/room";
 import { Hash } from "lucide-react";
 import { motion } from "motion/react";
 import { AudioUploaderMinimal } from "../AudioUploaderMinimal";
+import { SystemAudioStreaming } from "../SystemAudioStreaming";
 import { Separator } from "../ui/separator";
 import { ConnectedUsersList } from "./ConnectedUsersList";
 import { GlobalVolumeControl } from "./GlobalVolumeControl";
@@ -69,6 +70,11 @@ export const Left = ({ className }: LeftProps) => {
       {/* Connected Users List */}
       <ConnectedUsersList />
 
+      {/* System Audio Streaming */}
+      <div className="px-4 py-2">
+        <SystemAudioStreaming />
+      </div>
+
       {/* Playback Permissions */}
 
       {/* <Separator className="bg-neutral-800/50" /> */}
@@ -80,6 +86,9 @@ export const Left = ({ className }: LeftProps) => {
           <ul className="list-disc list-outside pl-4 space-y-1.5">
             <li className="text-xs leading-relaxed">
               {"Play on speaker directly. Don't use Bluetooth."}
+            </li>
+            <li className="text-xs leading-relaxed">
+              {"Use system audio streaming to share any audio from your device."}
             </li>
           </ul>
         </div>

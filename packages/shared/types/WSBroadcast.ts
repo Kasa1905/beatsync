@@ -104,6 +104,18 @@ const AudioChunkSchema = z.object({
 });
 export type AudioChunkType = z.infer<typeof AudioChunkSchema>;
 
+// Chat message broadcast
+const ChatMessageSchema = z.object({
+  type: z.literal("CHAT_MESSAGE"),
+  data: z.object({
+    userId: z.string(),
+    username: z.string(),
+    message: z.string(),
+    timestamp: z.number(),
+  }),
+});
+export type ChatMessageBroadcastType = z.infer<typeof ChatMessageSchema>;
+
 export const ScheduledActionSchema = z.object({
   type: z.literal("SCHEDULED_ACTION"),
   serverTimeToExecute: z.number(),
@@ -122,5 +134,6 @@ export const WSBroadcastSchema = z.discriminatedUnion("type", [
   RoomEventSchema,
   StreamJobUpdateSchema,
   AudioChunkSchema,
+  ChatMessageSchema,
 ]);
 export type WSBroadcastType = z.infer<typeof WSBroadcastSchema>;
