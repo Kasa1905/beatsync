@@ -14,31 +14,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        
     - name: Setup Bun
       uses: oven-sh/setup-bun@v1
       with:
         bun-version: latest
         
     - name: Install dependencies
-      run: |
-        npm install
-        cd apps/client && npm install
-        cd ../server && npm install
+      run: bun install
         
-    - name: Type check
-      run: |
-        cd apps/client && npm run build
-        cd ../server && npm run type-check
+    - name: Build and type check
+      run: bun run build
         
     - name: Run tests
-      run: |
-        cd apps/server && npm test
+      run: cd apps/server && bun test
 
   deploy-frontend:
     needs: test
@@ -48,6 +36,17 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+        
+    - name: Install dependencies
+      run: bun install
+      
+    - name: Build client
+      run: cd apps/client && bun run build
       
     - name: Deploy to Vercel
       uses: amondnet/vercel-action@v25
