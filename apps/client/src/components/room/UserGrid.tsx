@@ -1,5 +1,6 @@
 "use client";
 import { useClientId } from "@/hooks/useClientId";
+import { useMobileOptimizations } from "@/hooks/useMobileTouch";
 import { cn } from "@/lib/utils";
 import { useCanMutate, useGlobalStore } from "@/store/global";
 import { ClientType, GRID } from "@beatsync/shared";
@@ -103,6 +104,9 @@ const ClientAvatar = memo<ClientAvatarProps>(
 ClientAvatar.displayName = "ClientAvatar";
 
 export const UserGrid = () => {
+  // Initialize mobile optimizations
+  useMobileOptimizations();
+  
   const { clientId } = useClientId();
   const canMutate = useCanMutate();
   const listeningSource = useGlobalStore(

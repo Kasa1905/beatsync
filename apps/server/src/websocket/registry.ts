@@ -7,7 +7,9 @@ import { handleSendIp } from "./handlers/handleSendIp";
 import { handleSetAdmin } from "./handlers/handleSetAdmin";
 import { handleSetGlobalVolume } from "./handlers/setGlobalVolume";
 import { handleSetPlaybackControls } from "./handlers/handleSetPlaybackControls";
+import { handleSetRoomPrivacy } from "./handlers/handleSetRoomPrivacy";
 import { handleStreamMusic } from "./handlers/handleStreamMusic";
+import { handleAddAlbum } from "./handlers/handleAddAlbum";
 import { handleStartAudioStream } from "./handlers/handleStartAudioStream";
 import { handleStopAudioStream } from "./handlers/handleStopAudioStream";
 import { handleStreamAudioChunk } from "./handlers/handleStreamAudioChunk";
@@ -102,9 +104,19 @@ export const WS_REGISTRY: WebsocketRegistry = {
     description: "Stream music",
   },
 
+  [ClientActionEnum.enum.ADD_ALBUM]: {
+    handle: handleAddAlbum,
+    description: "Add complete album to room queue",
+  },
+
   [ClientActionEnum.enum.SET_GLOBAL_VOLUME]: {
     handle: handleSetGlobalVolume,
     description: "Set global volume for all clients in the room",
+  },
+
+  [ClientActionEnum.enum.SET_ROOM_PRIVACY]: {
+    handle: handleSetRoomPrivacy,
+    description: "Set room privacy (public/private)",
   },
 
   [ClientActionEnum.enum.START_AUDIO_STREAM]: {

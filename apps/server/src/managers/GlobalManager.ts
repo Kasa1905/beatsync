@@ -1,4 +1,5 @@
 import { RoomManager } from "./RoomManager";
+import { DiscoverRoomsType } from "@beatsync/shared";
 
 /**
  * GlobalManager is a singleton that manages all active rooms.
@@ -153,6 +154,37 @@ export class GlobalManager {
         }
       }, CLEANUP_DELAY_MS);
     }
+  }
+
+  /**
+   * Get active public rooms for discovery (excludes private rooms)
+   */
+  getActiveRooms(): DiscoverRoomsType {
+    const activeRooms = Array.from(this.rooms.values())
+      .filter((room) => {
+        // Room must have active connections
+        if (!room.hasActiveConnections()) return false;
+
+        // PRIVACY FILTER: Only show public rooms in discovery
+        if (room.isRoomPrivate()) return false;
+
+        const playbackState = room.getPlaybackState();
+        // Room must be playing something
+        if (playbackState.type !== "playing") return false;
+
+        // Validate that the playing track actually exists in the room's audio sources
+        const audioSources = room.getAudioSources();
+        const hasPlayingTrack = audioSources.some(
+          (source: any) => source.url === playbackState.audioSource
+        );
+
+        return hasPlayingTrack;
+      })
+      .map((room) => room.serialize())
+      .sort((a, b) => b.clients.length - a.clients.length) // Sort by client count desc
+      .slice(0, 20); // Limit to top 20 rooms for efficiency
+
+    return activeRooms;
   }
 }
 

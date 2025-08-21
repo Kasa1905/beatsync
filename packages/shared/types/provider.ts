@@ -68,7 +68,25 @@ export const TrackSchema = z.object({
 });
 export type TrackType = z.infer<typeof TrackSchema>;
 
+// Enhanced search result schema to support multiple providers
+const SearchResultSchema = z.object({
+  url: z.string(),
+  title: z.string(),
+  artist: z.string(),
+  duration: z.number().optional(),
+  thumbnail: z.string().optional(),
+  source: z.enum(['external', 'spotify', 'mock']).optional(),
+  spotifyId: z.string().optional(),
+  previewUrl: z.string().optional(),
+});
+
 export const RawSearchResponseSchema = z.object({
+  results: z.array(SearchResultSchema),
+  hasMore: z.boolean().optional(),
+  total: z.number().optional(),
+  provider: z.string().optional(),
+}).or(z.object({
+  // Legacy format for external providers
   data: z.object({
     tracks: z.object({
       limit: z.number(),
@@ -77,7 +95,7 @@ export const RawSearchResponseSchema = z.object({
       items: z.array(TrackSchema),
     }),
   }),
-});
+}));
 
 const SearchSuccessResponseSchema = z.object({
   type: z.literal("success"),

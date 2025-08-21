@@ -1,6 +1,22 @@
 import { z } from "zod";
 import { AudioSourceSchema } from "./basic";
 
+// Import ClientDataSchema for room discovery
+const LocationSchema = z.object({
+  country: z.string().optional(),
+  region: z.string().optional(),
+  city: z.string().optional(),
+  flagSvgURL: z.string().optional(),
+});
+
+const ClientDataSchema = z.object({
+  clientId: z.string(),
+  username: z.string(),
+  isAdmin: z.boolean(),
+  rtt: z.number().optional(),
+  location: LocationSchema.optional(),
+});
+
 // Legacy upload schema (deprecated)
 export const UploadAudioSchema = z.object({
   name: z.string(),
@@ -65,3 +81,17 @@ export type RoomType = z.infer<typeof RoomSchema>;
 
 export const GetActiveRoomsSchema = z.number();
 export type GetActiveRoomsType = z.infer<typeof GetActiveRoomsSchema>;
+
+export const DiscoveryRoomSchema = z.object({
+  roomId: z.string(),
+  clients: z.array(ClientDataSchema),
+  audioSources: z.array(AudioSourceSchema),
+  playbackState: z.object({
+    type: z.enum(["playing", "paused"]),
+    audioSource: z.string(), // URL of the audio source
+  }),
+});
+export type DiscoveryRoomType = z.infer<typeof DiscoveryRoomSchema>;
+
+export const DiscoverRoomsSchema = z.array(DiscoveryRoomSchema);
+export type DiscoverRoomsType = z.infer<typeof DiscoverRoomsSchema>;

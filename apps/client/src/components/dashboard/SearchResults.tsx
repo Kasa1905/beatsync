@@ -39,9 +39,10 @@ export function SearchResults({
   const formatTrackName = (track: TrackType) => {
     const artists: string[] = [];
 
-    // Add main performer
-    if (track.performer?.name) {
-      artists.push(track.performer.name);
+    // Add main performer/artist (handle both legacy and new formats)
+    const artistName = track.performer?.name || (track as { artist?: string }).artist;
+    if (artistName) {
+      artists.push(artistName);
     }
 
     // Add album artists if different from performer
@@ -79,7 +80,7 @@ export function SearchResults({
         trackId: track.id,
         trackName: formattedTrackName,
         trackTitle: track.title,
-        artist: track.performer.name,
+        artist: track.performer?.name || (track as { artist?: string }).artist,
         albumTitle: track.album.title,
         duration: track.duration,
         isrc: track.isrc,
@@ -209,10 +210,25 @@ export function SearchResults({
     );
   }
 
+  // Helper function to extract tracks from different response formats
+  const getTracksFromResponse = (data: unknown) => {
+    if (typeof data === 'object' && data !== null && 'tracks' in data) {
+      return (data as { tracks: unknown }).tracks; // New Spotify format
+    }
+    return data || []; // Legacy format (array directly)
+  };
+
+  const tracks = searchResults?.type === "success"
+    ? getTracksFromResponse(searchResults.response)
+    : [];
+
+  // Type guard to ensure tracks is an array
+  const tracksArray = Array.isArray(tracks) ? tracks : [];
+
   if (
     !searchResults ||
     (searchResults.type === "success" &&
-      !searchResults.response.data.tracks.items.length)
+      !tracksArray.length)
   ) {
     if (searchQuery) {
       return (
@@ -303,11 +319,6 @@ export function SearchResults({
     );
   }
 
-  const tracks =
-    searchResults.type === "success"
-      ? searchResults.response.data.tracks.items
-      : [];
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -316,9 +327,9 @@ export function SearchResults({
     >
       <AnimatePresence>
         <div className="space-y-1">
-          {tracks.map((track, index) => (
+          {tracksArray.map((track, index) => (
             <motion.div
-              key={track.id}
+              key={track.id || `${track.name}-${index}`}
               initial={{
                 opacity: 0,
                 filter: "blur(8px)",
@@ -365,7 +376,7 @@ export function SearchResults({
                   )}
                 </h4>
                 <p className="text-xs text-neutral-400 truncate">
-                  {track.performer.name}
+                  {track.performer?.name || (track as { artist?: string }).artist}
                 </p>
               </div>
 

@@ -5,6 +5,7 @@ import {
   UploadCompleteResponseType,
   UploadCompleteType,
   UploadUrlResponseType,
+  DiscoverRoomsType,
 } from "@beatsync/shared";
 import axios from "axios";
 
@@ -110,4 +111,23 @@ export async function fetchActiveRooms() {
   );
   const data: GetActiveRoomsType = await response.json();
   return data;
+}
+
+export async function fetchDiscoverRooms() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/discover`
+    );
+    
+    if (!response.ok) {
+      console.error("Failed to fetch discover rooms:", response.status);
+      return [];
+    }
+
+    const data: DiscoverRoomsType = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching discover rooms:", error);
+    return [];
+  }
 }

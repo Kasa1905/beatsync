@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PositionSchema } from "./basic";
+import { SearchCategory } from "./search";
 
 // ROOM EVENTS
 export const LocationSchema = z.object({
@@ -29,10 +30,12 @@ export const ClientActionEnum = z.enum([
   "SEARCH_MUSIC", // Search for music
   "STREAM_MUSIC", // Stream music
   "SET_GLOBAL_VOLUME", // Set global volume for all clients
+  "SET_ROOM_PRIVACY", // Set room privacy (public/private)
   "START_AUDIO_STREAM", // Start real-time audio streaming
   "STOP_AUDIO_STREAM", // Stop real-time audio streaming
   "STREAM_AUDIO_CHUNK", // Send audio data chunk
   "SEND_CHAT_MESSAGE", // Send chat message
+  "ADD_ALBUM", // Add complete album to queue
 ]);
 
 export const NTPRequestPacketSchema = z.object({
@@ -121,7 +124,16 @@ export const SendLocationSchema = z.object({
 export const SearchMusicSchema = z.object({
   type: z.literal(ClientActionEnum.enum.SEARCH_MUSIC),
   query: z.string(),
+  category: SearchCategory.optional().default("tracks"),
   offset: z.number().min(0).default(0).optional(),
+  limit: z.number().min(1).max(50).default(20).optional(),
+});
+
+export const AddAlbumSchema = z.object({
+  type: z.literal(ClientActionEnum.enum.ADD_ALBUM),
+  albumId: z.string(),
+  albumName: z.string(),
+  artistName: z.string(),
 });
 
 export const StreamMusicSchema = z.object({
@@ -133,6 +145,11 @@ export const StreamMusicSchema = z.object({
 export const SetGlobalVolumeSchema = z.object({
   type: z.literal(ClientActionEnum.enum.SET_GLOBAL_VOLUME),
   volume: z.number().min(0).max(1), // 0-1 range
+});
+
+export const SetRoomPrivacySchema = z.object({
+  type: z.literal(ClientActionEnum.enum.SET_ROOM_PRIVACY),
+  isPrivate: z.boolean(),
 });
 
 export const StartAudioStreamSchema = z.object({
@@ -180,7 +197,9 @@ export const WSRequestSchema = z.discriminatedUnion("type", [
   DeleteAudioSourcesSchema,
   SearchMusicSchema,
   StreamMusicSchema,
+  AddAlbumSchema,
   SetGlobalVolumeSchema,
+  SetRoomPrivacySchema,
   StartAudioStreamSchema,
   StopAudioStreamSchema,
   StreamAudioChunkSchema,

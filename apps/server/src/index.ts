@@ -3,6 +3,7 @@ import { handleStats } from "./routes/stats";
 import { handleGetPresignedURL, handleUploadComplete } from "./routes/upload";
 import { handleWebSocketUpgrade } from "./routes/websocket";
 import { handleGetDefaultAudio } from "./routes/default";
+import { handleDiscover } from "./routes/discover";
 import {
   handleClose,
   handleMessage,
@@ -60,6 +61,9 @@ const server = Bun.serve<WSData, undefined>({
 
         case "/active-rooms":
           return getActiveRooms(req);
+
+        case "/discover":
+          return handleDiscover(req);
 
         default:
           return errorResponse("Not found", 404);

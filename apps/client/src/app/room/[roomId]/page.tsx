@@ -1,4 +1,5 @@
 import { NewSyncer } from "@/components/NewSyncer";
+import { ErrorState } from "@/components/ui/states";
 import { validateFullRoomId } from "@/lib/room";
 
 export default async function Page({
@@ -9,13 +10,13 @@ export default async function Page({
   const { roomId } = await params;
   if (!validateFullRoomId(roomId)) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-2">
-        <div>
-          Invalid room ID: <span className="font-bold">{roomId}</span>.
-        </div>
-        <div className="text-sm text-gray-500">
-          Please enter a valid 6-digit numeric code.
-        </div>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <ErrorState
+          title="Invalid Room Code"
+          description={`"${roomId}" is not a valid room code. Please enter a 6-digit numeric code to join a room.`}
+          onRetry={() => window.location.href = "/"}
+          retryText="Go Home"
+        />
       </div>
     );
   }

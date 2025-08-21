@@ -7,10 +7,12 @@ export const handleSearchMusic: HandlerFunction<
   ExtractWSRequestFrom["SEARCH_MUSIC"]
 > = async ({ ws, message }) => {
   try {
-    const data = await MUSIC_PROVIDER_MANAGER.search(
-      message.query,
-      message.offset || 0
-    );
+    const { query, category = "tracks" } = message;
+    
+    console.log(`🔍 Search request: "${query}" (${category})`);
+    
+    // For simplicity, always search tracks but keep the category for future use
+    const data = await MUSIC_PROVIDER_MANAGER.search(query);
 
     sendUnicast({
       ws,
@@ -23,7 +25,7 @@ export const handleSearchMusic: HandlerFunction<
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Search failed:", error);
     sendUnicast({
       ws,
       message: {

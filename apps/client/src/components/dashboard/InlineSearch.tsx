@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { usePostHog } from "posthog-js/react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import { SearchResults } from "./SearchResults";
+import { CategorizedSearch } from "./CategorizedSearch";
 
 interface SearchForm {
   query: string;
@@ -44,9 +44,8 @@ export function InlineSearch() {
   // Cleanup timeout on unmount
   React.useEffect(() => {
     return () => {
-      const currentTimeout = blurTimeoutRef.current;
-      if (currentTimeout) {
-        clearTimeout(currentTimeout);
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
       }
     };
   }, []);
@@ -114,6 +113,7 @@ export function InlineSearch() {
       request: {
         type: ClientActionEnum.enum.SEARCH_MUSIC,
         query: data.query,
+        category: "tracks", // Default to tracks category
       },
     });
   };
@@ -343,7 +343,7 @@ export function InlineSearch() {
               )}
             >
               {isSearching || searchResults ? (
-                <SearchResults
+                <CategorizedSearch
                   className="p-2"
                   onTrackSelect={handleTrackSelection}
                 />

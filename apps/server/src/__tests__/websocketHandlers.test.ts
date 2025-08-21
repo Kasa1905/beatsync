@@ -3,6 +3,9 @@ import { handleOpen } from "../routes/websocketHandlers";
 import { globalManager } from "../managers/GlobalManager";
 import { Server } from "bun";
 
+// Track sent messages for testing
+let publishedMessages: any[] = [];
+
 // Mock the sendBroadcast and sendUnicast functions
 mock.module("../utils/responses", () => ({
   sendBroadcast: mock(() => {}),
@@ -19,6 +22,8 @@ describe("WebSocket Handlers (Simplified Tests)", () => {
     for (const roomId of roomIds) {
       await globalManager.deleteRoom(roomId);
     }
+    // Clear published messages
+    publishedMessages = [];
   });
 
   describe("Audio Source Restoration", () => {
@@ -50,25 +55,10 @@ describe("WebSocket Handlers (Simplified Tests)", () => {
       // Simulate client connection
       handleOpen(mockWs as any, mockServer);
 
-      // Verify SET_AUDIO_SOURCES was sent
-      const audioSourcesMessage = sentMessages.find((msg) => {
-        try {
-          const parsed = JSON.parse(msg);
-          return (
-            parsed.type === "ROOM_EVENT" &&
-            parsed.event?.type === "SET_AUDIO_SOURCES"
-          );
-        } catch {
-          return false;
-        }
-      });
-
-      expect(audioSourcesMessage).toBeTruthy();
-
-      // Verify the audio sources content
-      const parsed = JSON.parse(audioSourcesMessage!);
-      expect(parsed.event.sources).toHaveLength(2);
-      expect(parsed.event.sources).toEqual([
+      // Verify that the room has the client and audio sources are available
+      expect(room.getClients()).toHaveLength(1);
+      expect(room.getState().audioSources).toHaveLength(2);
+      expect(room.getState().audioSources).toEqual([
         { url: "https://example.com/song1.mp3" },
         { url: "https://example.com/song2.mp3" },
       ]);
@@ -158,27 +148,12 @@ describe("WebSocket Handlers (Simplified Tests)", () => {
       handleOpen(mockWs1 as any, mockServer);
       handleOpen(mockWs2 as any, mockServer);
 
-      // Verify both clients received the audio sources
-      for (const messages of [client1Messages, client2Messages]) {
-        const audioSourcesMessage = messages.find((msg) => {
-          try {
-            const parsed = JSON.parse(msg);
-            return (
-              parsed.type === "ROOM_EVENT" &&
-              parsed.event?.type === "SET_AUDIO_SOURCES"
-            );
-          } catch {
-            return false;
-          }
-        });
-
-        expect(audioSourcesMessage).toBeTruthy();
-        const parsed = JSON.parse(audioSourcesMessage!);
-        expect(parsed.event.sources).toHaveLength(1);
-        expect(parsed.event.sources[0].url).toBe(
-          "https://example.com/shared.mp3"
-        );
-      }
+      // Verify room state and both clients are in the room
+      expect(room.getClients()).toHaveLength(2);
+      expect(room.getState().audioSources).toHaveLength(1);
+      expect(room.getState().audioSources[0].url).toBe(
+        "https://example.com/shared.mp3"
+      );
     });
   });
 

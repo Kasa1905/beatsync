@@ -10,6 +10,12 @@
   "categories": ["music", "entertainment", "social"],
   "lang": "en",
   "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay"],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "icons": [
     {
       "src": "/icon-72x72.png",
@@ -80,29 +86,30 @@
     {
       "name": "Join Room",
       "short_name": "Join",
-      "description": "Join an existing music room",
-      "url": "/?action=join",
+      "description": "Join an existing BeatSync room",
+      "url": "/",
       "icons": [
         {
           "src": "/icon-192x192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
     {
       "name": "Create Room",
       "short_name": "Create",
-      "description": "Create a new music room",
+      "description": "Create a new BeatSync room",
       "url": "/?action=create",
       "icons": [
         {
           "src": "/icon-192x192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }
   ],
-  "prefer_related_applications": false,
   "protocol_handlers": [
     {
       "protocol": "web+beatsync",

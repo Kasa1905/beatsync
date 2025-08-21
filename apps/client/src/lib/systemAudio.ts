@@ -113,8 +113,9 @@ export class UniversalSystemAudioManager {
       console.warn('Could not access navigator properties:', e);
       // Fallback to window properties if navigator fails
       try {
-        userAgent = String((window as any)?.navigator?.userAgent || '');
-        platform = String((window as any)?.navigator?.platform || '');
+        const windowNav = (window as typeof window & { navigator?: Navigator })?.navigator;
+        userAgent = String(windowNav?.userAgent || '');
+        platform = String(windowNav?.platform || '');
       } catch (e2) {
         console.warn('Could not access window.navigator:', e2);
       }
@@ -143,12 +144,13 @@ export class UniversalSystemAudioManager {
       else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) browser = 'Safari';
       
       // Check for Brave separately
-      if (typeof (window as any)?.chrome?.runtime?.onConnect !== 'undefined') {
+      if (typeof (window as typeof window & { chrome?: { runtime?: { onConnect?: unknown } } })?.chrome?.runtime?.onConnect !== 'undefined') {
         try {
-          if ((navigator as any)?.brave && typeof (navigator as any).brave.isBrave === 'function') {
+          const navWithBrave = navigator as Navigator & { brave?: { isBrave?: () => boolean } };
+          if (navWithBrave?.brave && typeof navWithBrave.brave.isBrave === 'function') {
             browser = 'Brave';
           }
-        } catch (e) {
+        } catch {
           // Ignore Brave detection errors
         }
       }
@@ -177,8 +179,8 @@ export class UniversalSystemAudioManager {
     } catch (e) {
       console.warn('Could not detect screen capture support:', e);
       try {
-        const winNav = (window as any)?.navigator;
-        if (winNav?.mediaDevices?.getDisplayMedia) {
+        const windowNav = (window as typeof window & { navigator?: Navigator })?.navigator;
+        if (windowNav?.mediaDevices && 'getDisplayMedia' in windowNav.mediaDevices) {
           supportsScreenCapture = true;
         }
       } catch (e2) {
@@ -202,8 +204,8 @@ export class UniversalSystemAudioManager {
     } catch (e) {
       console.warn('Could not detect media devices support:', e);
       try {
-        const winNav = (window as any)?.navigator;
-        if (winNav?.mediaDevices) {
+        const windowNav = (window as typeof window & { navigator?: Navigator })?.navigator;
+        if (windowNav?.mediaDevices) {
           mediaDevices = true;
         }
       } catch (e2) {

@@ -30,6 +30,7 @@ interface RoomData {
   listeningSource: PositionType;
   playbackControlsPermissions: PlaybackControlsPermissionsType;
   globalVolume: number; // Master volume multiplier (0-1)
+  isPrivate: boolean; // Whether room is private (hidden from discovery)
 }
 
 // Define Zod schemas for backup validation
@@ -49,6 +50,7 @@ const RoomBackupSchema = z.object({
   audioSources: z.array(AudioSourceSchema),
   clientCache: ClientCacheBackupSchema.optional(),
   globalVolume: z.number().min(0).max(1).default(1.0),
+  isPrivate: z.boolean().default(false),
 });
 export type RoomBackupType = z.infer<typeof RoomBackupSchema>;
 
@@ -96,6 +98,7 @@ export class RoomManager {
   private playbackControlsPermissions: PlaybackControlsPermissionsType =
     "ADMIN_ONLY";
   private globalVolume: number = 1.0; // Default 100% volume
+  private isPrivate: boolean = false; // Default to public rooms
   private activeStreamJobs = new Map<
     string,
     { trackId: string; status: string }
@@ -233,6 +236,14 @@ export class RoomManager {
     return this.audioSources;
   }
 
+  /**
+   * Add multiple audio sources to the room (for albums)
+   */
+  addMultipleAudioSources(sources: AudioSourceType[]): AudioSourceType[] {
+    this.audioSources.push(...sources);
+    return this.audioSources;
+  }
+
   // Set all audio sources (used in backup restoration)
   setAudioSources(sources: AudioSourceType[]): AudioSourceType[] {
     this.audioSources = sources;
@@ -329,6 +340,7 @@ export class RoomManager {
       listeningSource: this.listeningSource,
       playbackControlsPermissions: this.playbackControlsPermissions,
       globalVolume: this.globalVolume,
+      isPrivate: this.isPrivate,
     };
   }
 
@@ -346,6 +358,33 @@ export class RoomManager {
 
   getNumClients(): number {
     return this.clients.size;
+  }
+
+  /**
+   * Get audio sources for the room
+   */
+  getAudioSources(): AudioSourceType[] {
+    return this.audioSources;
+  }
+
+  /**
+   * Serialize room data for discovery API
+   */
+  serialize() {
+    const clients = Array.from(this.clients.values()).map(client => ({
+      clientId: client.clientId,
+      username: client.username,
+      isAdmin: client.isAdmin,
+      rtt: client.rtt,
+      location: client.location || undefined,
+    }));
+
+    return {
+      roomId: this.roomId,
+      clients,
+      audioSources: this.audioSources,
+      playbackState: this.getPlaybackState(),
+    };
   }
 
   /**
@@ -483,6 +522,21 @@ export class RoomManager {
         },
       },
     });
+  }
+
+  /**
+   * Set room privacy status
+   */
+  setRoomPrivacy(isPrivate: boolean): void {
+    this.isPrivate = isPrivate;
+    console.log(`Room ${this.roomId} privacy set to: ${isPrivate ? 'private' : 'public'}`);
+  }
+
+  /**
+   * Get room privacy status
+   */
+  isRoomPrivate(): boolean {
+    return this.isPrivate;
   }
 
   /**
@@ -672,6 +726,7 @@ export class RoomManager {
       audioSources: this.audioSources,
       clientCache: clientCacheObject,
       globalVolume: this.globalVolume,
+      isPrivate: this.isPrivate,
     };
   }
 

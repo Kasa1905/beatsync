@@ -236,10 +236,21 @@ export const WebSocketManager = ({
 
         // Update hasMoreResults based on response
         if (response.response.type === "success") {
-          const { total, items, offset } =
-            response.response.response.data.tracks;
-          const hasMore = offset + items.length < total;
-          setHasMoreResults(hasMore);
+          // Handle both legacy and new response formats
+          const responseData = response.response.response;
+          
+          // Check if it's the new format with results array
+          if ('results' in responseData && Array.isArray(responseData.results)) {
+            // New format - check hasMore property
+            setHasMoreResults(responseData.hasMore || false);
+          } else if ('data' in responseData && responseData.data && 'tracks' in responseData.data) {
+            // Legacy format
+            const { total, items, offset } = (responseData as { data: { tracks: { total: number; items: unknown[]; offset: number } } }).data.tracks;
+            const hasMore = offset + items.length < total;
+            setHasMoreResults(hasMore);
+          } else {
+            setHasMoreResults(false);
+          }
         } else {
           setHasMoreResults(false);
         }

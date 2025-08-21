@@ -5,6 +5,8 @@ import { useRoomStore } from "@/store/room";
 import { Hash } from "lucide-react";
 import { motion } from "motion/react";
 import { AudioUploaderMinimal } from "../AudioUploaderMinimal";
+import { RoomQRCode } from "../RoomQRCode";
+import { RoomPrivacyToggle } from "../RoomPrivacyToggle";
 import { SystemAudioStreaming } from "../SystemAudioStreaming";
 import { Separator } from "../ui/separator";
 import { ConnectedUsersList } from "./ConnectedUsersList";
@@ -50,15 +52,25 @@ export const Left = ({ className }: LeftProps) => {
 
       {/* Navigation menu */}
       <motion.div className="px-3.5 space-y-2.5 py-2 mt-1">
-        <div className="flex items-center gap-2 font-medium">
-          <Hash size={18} />
-          <span>Room {roomId}</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 font-medium">
+            <Hash size={18} />
+            <span>Room {roomId}</span>
+          </div>
+
+          {/* QR Code Dialog */}
+          <RoomQRCode />
         </div>
       </motion.div>
 
       <Separator className="bg-neutral-800/50" />
 
       <PlaybackPermissions />
+
+      <Separator className="bg-neutral-800/50" />
+
+      {/* Room Privacy Toggle */}
+      <RoomPrivacyToggle />
 
       <Separator className="bg-neutral-800/50" />
 

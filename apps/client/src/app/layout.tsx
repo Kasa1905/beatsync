@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import TQProvider from "@/components/TQProvider";
 import { Toaster } from "@/components/ui/sonner";
@@ -51,11 +52,18 @@ export default function RootLayout({
         )}
       >
         <PostHogProvider>
-          <TQProvider>
-            {children}
-            <Toaster />
-            <Analytics />
-          </TQProvider>
+          <ErrorBoundary>
+            <TQProvider>
+              {children}
+              <Toaster 
+                theme="dark" 
+                position="top-center" 
+                closeButton
+                richColors
+              />
+              <Analytics />
+            </TQProvider>
+          </ErrorBoundary>
         </PostHogProvider>
         
         {/* Service Worker Registration */}

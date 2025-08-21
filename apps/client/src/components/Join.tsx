@@ -5,6 +5,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useMobileOptimizations } from "@/hooks/useMobileTouch";
 import { fetchActiveRooms } from "@/lib/api";
 import { generateName } from "@/lib/randomNames";
 import { validateFullRoomId, validatePartialRoomId } from "@/lib/room";
@@ -17,12 +18,16 @@ import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { ActiveRooms } from "./ActiveRooms";
 
 interface JoinFormData {
   roomId: string;
 }
 
 export const Join = () => {
+  // Initialize mobile optimizations
+  useMobileOptimizations();
+  
   const posthog = usePostHog();
   const [isJoining, setIsJoining] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -34,11 +39,14 @@ export const Join = () => {
     formState: { errors },
     control,
     setValue,
+    watch,
   } = useForm<JoinFormData>({
     defaultValues: {
       roomId: "",
     },
   });
+
+  const roomId = watch("roomId");
 
   useEffect(() => {
     // Set a random username when component mounts
@@ -58,7 +66,10 @@ export const Join = () => {
     setIsJoining(true);
     // Validate roomId
     if (!validateFullRoomId(data.roomId)) {
-      toast.error("Invalid room code. Please enter 6 digits.");
+      toast.error("Invalid room code", {
+        description: "Please enter exactly 6 digits to join a room",
+        duration: 4000,
+      });
       setIsJoining(false);
 
       // Track validation error
@@ -68,6 +79,12 @@ export const Join = () => {
       });
       return;
     }
+
+    // Show joining feedback
+    toast.loading("Joining room...", {
+      id: "joining-room",
+      description: `Connecting to room ${data.roomId}`,
+    });
 
     // Track join attempt
     posthog.capture("join_room_attempt", {
@@ -87,6 +104,12 @@ export const Join = () => {
 
     // Generate a random 6-digit room ID
     const newRoomId = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Show creation feedback
+    toast.loading("Creating room...", {
+      id: "creating-room",
+      description: `Setting up room ${newRoomId}`,
+    });
 
     // Track room creation
     posthog.capture("create_room", {
@@ -110,14 +133,14 @@ export const Join = () => {
 
   return (
     <motion.div
-      className="fixed inset-0 flex flex-col items-center justify-center bg-neutral-950 backdrop-blur-sm"
+      className="fixed inset-0 flex flex-col items-center justify-center bg-neutral-950 backdrop-blur-sm no-bounce"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="w-full px-1">
+      <div className="w-full px-2 sm:px-1 touch-smooth">
         <motion.div
-          className="flex flex-col items-center justify-center p-6 bg-neutral-900 rounded-lg border border-neutral-800 shadow-xl max-w-[28rem] mx-auto"
+          className="flex flex-col items-center justify-center p-4 sm:p-6 bg-neutral-900 rounded-lg border border-neutral-800 shadow-xl max-w-[28rem] mx-auto"
           initial={{ opacity: 0, y: 10, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -263,37 +286,52 @@ export const Join = () => {
             </motion.div>
 
             <div className="flex flex-col gap-3 mt-5">
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                whileHover={!isJoining && !isCreating ? { scale: 1.01 } : {}}
-                whileTap={!isJoining && !isCreating ? { scale: 0.98 } : {}}
-              >
-                <Button
-                  type="submit"
-                  className="w-full px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-medium text-sm cursor-pointer transition-all duration-300 flex items-center justify-center"
-                  disabled={isJoining || isCreating}
-                  onClick={() => {
-                    posthog.capture("join_button_clicked");
-                  }}
+              {/* Show auto-join indicator when room code is complete */}
+              {roomId.length === 6 && !isJoining && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="w-full px-4 py-2 bg-primary/20 border border-primary/30 text-primary rounded-full font-medium text-sm flex items-center justify-center"
                 >
-                  {isJoining ? (
-                    <motion.div
-                      transition={{
-                        repeat: Infinity,
-                        duration: 1,
-                        ease: "linear",
-                      }}
-                    >
+                  <LogIn size={16} className="mr-2" />
+                  <span>Auto-joining room...</span>
+                </motion.div>
+              )}
+
+              {/* Only show join button if room code is not complete */}
+              {roomId.length < 6 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  whileHover={!isJoining && !isCreating ? { scale: 1.01 } : {}}
+                  whileTap={!isJoining && !isCreating ? { scale: 0.98 } : {}}
+                >
+                  <Button
+                    type="submit"
+                    className="w-full px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-medium text-sm cursor-pointer transition-all duration-300 flex items-center justify-center"
+                    disabled={isJoining || isCreating}
+                    onClick={() => {
+                      posthog.capture("join_button_clicked");
+                    }}
+                  >
+                    {isJoining ? (
+                      <motion.div
+                        transition={{
+                          repeat: Infinity,
+                          duration: 1,
+                          ease: "linear",
+                        }}
+                      >
+                        <LogIn size={16} className="mr-2" />
+                      </motion.div>
+                    ) : (
                       <LogIn size={16} className="mr-2" />
-                    </motion.div>
-                  ) : (
-                    <LogIn size={16} className="mr-2" />
-                  )}
-                  <span>{isJoining ? "Joining..." : "Join room"}</span>
-                </Button>
-              </motion.div>
+                    )}
+                    <span>{isJoining ? "Joining..." : "Join room"}</span>
+                  </Button>
+                </motion.div>
+              )}
 
               <motion.div
                 initial={{ opacity: 0, y: 5 }}
@@ -344,8 +382,11 @@ export const Join = () => {
             transition={{ duration: 0.4, delay: 0.5 }}
           />
 
-          {/* Social links */}
+          {/* Social links removed as requested */}
         </motion.div>
+
+        {/* Active Rooms Section */}
+        <ActiveRooms />
       </div>
     </motion.div>
   );

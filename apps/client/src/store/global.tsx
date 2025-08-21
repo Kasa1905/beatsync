@@ -1320,19 +1320,28 @@ export const useGlobalStore = create<GlobalState>((set, get) => {
         const state = get();
         if (state.searchResults?.type === "success") {
           // Append new results to existing ones
-          const existingItems = state.searchResults.response.data.tracks.items;
-          const newItems = results.response.data.tracks.items;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const existingItems = (state.searchResults.response as any).data?.tracks?.items || (state.searchResults.response as any).results || [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const newItems = (results.response as any).data?.tracks?.items || (results.response as any).results || [];
           const combinedResults = {
             ...results,
             response: {
               ...results.response,
-              data: {
-                ...results.response.data,
-                tracks: {
-                  ...results.response.data.tracks,
-                  items: [...existingItems, ...newItems],
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ...(((results.response as any).data) ? {
+                data: {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ...(results.response as any).data,
+                  tracks: {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    ...(results.response as any).data.tracks,
+                    items: [...existingItems, ...newItems],
+                  },
                 },
-              },
+              } : {
+                results: [...existingItems, ...newItems],
+              }),
             },
           };
           set({ searchResults: combinedResults });
@@ -1368,7 +1377,8 @@ export const useGlobalStore = create<GlobalState>((set, get) => {
       // Calculate next offset based on current results
       const currentResults =
         state.searchResults?.type === "success"
-          ? state.searchResults.response.data.tracks.items.length
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ? ((state.searchResults.response as any).data?.tracks?.items?.length || (state.searchResults.response as any).results?.length || 0)
           : 0;
       const nextOffset = searchOffset + currentResults;
 
@@ -1383,6 +1393,7 @@ export const useGlobalStore = create<GlobalState>((set, get) => {
         request: {
           type: ClientActionEnum.enum.SEARCH_MUSIC,
           query: searchQuery,
+          category: "tracks", // Add required category field
           offset: nextOffset,
         },
       });

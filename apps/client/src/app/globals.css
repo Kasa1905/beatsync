@@ -52,6 +52,47 @@
   --animate-sound-wave-3: sound-wave-3 1s ease-in-out infinite;
 }
 
+/* Mobile optimizations */
+.mobile-optimized {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mobile-optimized * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Touch-friendly hit targets */
+@media (max-width: 768px) {
+  button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Larger text for better readability */
+  .text-xs {
+    font-size: 0.8rem;
+  }
+  
+  .text-sm {
+    font-size: 0.9rem;
+  }
+}
+
+/* Prevent iOS bounce scrolling */
+.no-bounce {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth touch interactions */
+.touch-smooth {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
