@@ -72,8 +72,21 @@ export class UniversalSystemAudioManager {
    * Detect device capabilities and type
    */
   private detectDevice(): DeviceInfo {
-    const userAgent = navigator.userAgent;
-    const platform = navigator.platform;
+    let userAgent = '';
+    let platform = '';
+    
+    // Safely access navigator properties
+    try {
+      userAgent = navigator.userAgent || '';
+    } catch (e) {
+      console.warn('Could not access navigator.userAgent:', e);
+    }
+    
+    try {
+      platform = navigator.platform || '';
+    } catch (e) {
+      console.warn('Could not access navigator.platform:', e);
+    }
     
     // Detect OS
     const isIOS = /iPad|iPhone|iPod/.test(userAgent);
@@ -89,19 +102,27 @@ export class UniversalSystemAudioManager {
     else if (isWindows) os = 'Windows';
     else if (isLinux) os = 'Linux';
     
-    // Detect browser - safer approach without vendor property access
-    const isChrome = /Chrome/.test(userAgent) && !!/Chrome/.test(userAgent);
-    const isSafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
-    const isFirefox = /Firefox/.test(userAgent);
-    const isEdge = /Edg/.test(userAgent);
-    const isBrave = (userAgent.includes('Brave') || (typeof (navigator as any)?.brave?.isBrave === 'function'));
-    
+    // Detect browser - completely safe approach
     let browser: DeviceInfo['browser'] = 'unknown';
-    if (isBrave) browser = 'Brave';
-    else if (isChrome) browser = 'Chrome';
-    else if (isSafari) browser = 'Safari';
-    else if (isFirefox) browser = 'Firefox';
-    else if (isEdge) browser = 'Edge';
+    try {
+      if (userAgent.includes('Edg')) browser = 'Edge';
+      else if (userAgent.includes('Firefox')) browser = 'Firefox';
+      else if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) browser = 'Chrome';
+      else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) browser = 'Safari';
+      
+      // Check for Brave separately
+      if (typeof (window as any)?.chrome?.runtime?.onConnect !== 'undefined') {
+        try {
+          if ((navigator as any)?.brave && typeof (navigator as any).brave.isBrave === 'function') {
+            browser = 'Brave';
+          }
+        } catch (e) {
+          // Ignore Brave detection errors
+        }
+      }
+    } catch (e) {
+      console.warn('Could not detect browser:', e);
+    }
     
     // Detect device type
     const isMobile = /Mobi|Android/i.test(userAgent);
@@ -111,10 +132,28 @@ export class UniversalSystemAudioManager {
     if (isMobile) deviceType = 'mobile';
     else if (isTablet) deviceType = 'tablet';
     
-    // Feature detection with safe checks
-    const supportsScreenCapture = !!(navigator?.mediaDevices?.getDisplayMedia);
-    const supportsAudioWorklet = !!(window.AudioContext && AudioContext.prototype.audioWorklet);
-    const mediaDevices = !!navigator?.mediaDevices;
+    // Feature detection with complete safety
+    let supportsScreenCapture = false;
+    let supportsAudioWorklet = false;
+    let mediaDevices = false;
+    
+    try {
+      supportsScreenCapture = !!(navigator?.mediaDevices?.getDisplayMedia);
+    } catch (e) {
+      console.warn('Could not detect screen capture support:', e);
+    }
+    
+    try {
+      supportsAudioWorklet = !!(window.AudioContext && AudioContext.prototype.audioWorklet);
+    } catch (e) {
+      console.warn('Could not detect AudioWorklet support:', e);
+    }
+    
+    try {
+      mediaDevices = !!navigator?.mediaDevices;
+    } catch (e) {
+      console.warn('Could not detect media devices support:', e);
+    }
     
     return {
       deviceType,
