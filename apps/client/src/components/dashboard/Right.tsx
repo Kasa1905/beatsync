@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import { QueueMusic } from "lucide-react";
+import { Music } from "lucide-react";
 import { motion } from "motion/react";
-import Queue from "../Queue";
+import { Queue } from "../Queue";
 import { AudioUploaderMinimal } from "../AudioUploaderMinimal";
 import { LoadDefaultTracksButton } from "../LoadDefaultTracksButton";
 
@@ -20,7 +20,7 @@ export const Right = ({ className }: RightProps) => {
       {/* Header */}
       <div className="px-3 py-2 flex items-center gap-2">
         <div className="bg-neutral-800 rounded-md p-1.5">
-          <QueueMusic className="h-4 w-4 text-white" />
+          <Music className="h-4 w-4 text-white" />
         </div>
         <h1 className="font-semibold text-white">Queue</h1>
       </div>
