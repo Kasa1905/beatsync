@@ -1,11 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGlobalStore } from "@/store/global";
-import { Library, ListMusic, Rotate3D, Activity, MonitorSpeaker } from "lucide-react";
+import { Library, ListMusic, Rotate3D, Activity, Upload } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { TopBar } from "../room/TopBar";
 import { SyncProgress } from "../ui/SyncProgress";
 import { AudioMonitoringDashboard } from "../room/AudioMonitoringDashboard";
-import { SystemAudioStreamer } from "../room/SystemAudioStreamer";
+import { AudioUploaderMinimal } from "../AudioUploaderMinimal";
 import { Bottom } from "./Bottom";
 import { Left } from "./Left";
 import { Main } from "./Main";
@@ -87,7 +87,7 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                   value="stream"
                   className="flex-1 data-[state=active]:bg-white/5 data-[state=active]:shadow-none rounded-none text-xs h-full gap-1 text-neutral-400 data-[state=active]:text-white transition-all duration-200"
                 >
-                  <MonitorSpeaker size={14} /> Stream
+                  <Upload size={14} /> Upload
                 </TabsTrigger>
                 <TabsTrigger
                   value="monitor"
@@ -156,7 +156,7 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                     transition={{ duration: 0.3 }}
                     className="h-full p-4 space-y-4"
                   >
-                    <SystemAudioStreamer />
+                    <AudioUploaderMinimal />
                   </motion.div>
                 </TabsContent>
                 <TabsContent

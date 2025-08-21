@@ -151,7 +151,8 @@ export const SystemAudioStreamer = ({ className }: SystemAudioStreamerProps) => 
       if (type === 'system') {
         const caps = getBrowserCapabilities();
         if (caps.systemAudioSupport !== 'none') {
-          return await navigator.mediaDevices.getDisplayMedia({
+          console.log('Attempting system audio capture...');
+          const stream = await navigator.mediaDevices.getDisplayMedia({
             audio: {
               echoCancellation: false,
               noiseSuppression: false,
@@ -161,12 +162,24 @@ export const SystemAudioStreamer = ({ className }: SystemAudioStreamerProps) => 
             },
             video: false
           });
+          
+          // Check if audio track exists
+          const audioTracks = stream.getAudioTracks();
+          if (audioTracks.length === 0) {
+            stream.getTracks().forEach(track => track.stop());
+            throw new Error('No audio track found. Please make sure to check "Share audio" when prompted.');
+          }
+          
+          console.log('System audio capture successful!', audioTracks);
+          return stream;
         }
         // Fallback to microphone
+        console.log('System audio not supported, falling back to microphone');
         type = 'mic';
       }
       
       if (type === 'mic') {
+        console.log('Attempting microphone capture...');
         return await navigator.mediaDevices.getUserMedia({
           audio: {
             echoCancellation: false,
@@ -179,7 +192,21 @@ export const SystemAudioStreamer = ({ className }: SystemAudioStreamerProps) => 
       }
     } catch (error) {
       console.error(`Failed to get ${type} stream:`, error);
-      throw error;
+      
+      // Provide user-friendly error messages
+      if (error instanceof Error) {
+        if (error.name === 'NotAllowedError') {
+          throw new Error('Permission denied. Please allow audio access and try again.');
+        } else if (error.name === 'NotFoundError') {
+          throw new Error('No audio device found. Please check your audio settings.');
+        } else if (error.name === 'NotSupportedError') {
+          throw new Error('Audio capture not supported in this browser. Try Chrome or Edge.');
+        } else if (error.message.includes('audio track')) {
+          throw error; // Our custom message about sharing audio
+        }
+      }
+      
+      throw new Error(`Audio capture failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
     
     return null;
