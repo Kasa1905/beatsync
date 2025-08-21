@@ -185,6 +185,9 @@ interface GlobalState extends GlobalStateValues {
 
   // Stream job methods
   setActiveStreamJobs: (count: number) => void;
+  
+  // Chat methods
+  sendChatMessage: (message: string) => void;
 }
 
 // Define initial state values
@@ -1387,5 +1390,28 @@ export const useGlobalStore = create<GlobalState>((set, get) => {
 
     // Stream job methods
     setActiveStreamJobs: (count) => set({ activeStreamJobs: count }),
+
+    // Chat methods
+    sendChatMessage: (message: string) => {
+      const state = get();
+      const { socket, currentUser } = state;
+
+      if (!socket) {
+        console.error("Cannot send chat message: missing socket");
+        return;
+      }
+
+      const clientId = getClientId();
+
+      sendWSRequest({
+        ws: socket,
+        request: {
+          type: ClientActionEnum.enum.SEND_CHAT_MESSAGE,
+          message,
+          deviceId: clientId,
+          nickname: currentUser?.username || "Anonymous",
+        },
+      });
+    },
   };
 });

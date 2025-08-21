@@ -32,6 +32,7 @@ export const ClientActionEnum = z.enum([
   "START_AUDIO_STREAM", // Start real-time audio streaming
   "STOP_AUDIO_STREAM", // Stop real-time audio streaming
   "STREAM_AUDIO_CHUNK", // Send audio data chunk
+  "SEND_CHAT_MESSAGE", // Send chat message
 ]);
 
 export const NTPRequestPacketSchema = z.object({
@@ -155,6 +156,13 @@ export const StreamAudioChunkSchema = z.object({
   timestamp: z.number(),
 });
 
+export const SendChatMessageSchema = z.object({
+  type: z.literal(ClientActionEnum.enum.SEND_CHAT_MESSAGE),
+  message: z.string(),
+  deviceId: z.string(),
+  nickname: z.string(),
+});
+
 export const WSRequestSchema = z.discriminatedUnion("type", [
   PlayActionSchema,
   PauseActionSchema,
@@ -176,6 +184,7 @@ export const WSRequestSchema = z.discriminatedUnion("type", [
   StartAudioStreamSchema,
   StopAudioStreamSchema,
   StreamAudioChunkSchema,
+  SendChatMessageSchema,
 ]);
 export type WSRequestType = z.infer<typeof WSRequestSchema>;
 export type PlayActionType = z.infer<typeof PlayActionSchema>;

@@ -13,3 +13,8 @@ export const NTP_CONSTANTS = {
   // Maximum number of NTP measurements to collect initially
   MAX_MEASUREMENTS: 40,
 } as const;
+
+// Chat Constants
+export const CHAT_CONSTANTS = {
+  MAX_MESSAGE_LENGTH: 500,
+} as const;
