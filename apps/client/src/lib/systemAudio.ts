@@ -75,17 +75,22 @@ export class UniversalSystemAudioManager {
     let userAgent = '';
     let platform = '';
     
-    // Safely access navigator properties
+    // Ultra-safe navigator access using object destructuring and optional chaining
     try {
-      userAgent = navigator.userAgent || '';
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      if (nav) {
+        userAgent = String(nav.userAgent || '');
+        platform = String(nav.platform || '');
+      }
     } catch (e) {
-      console.warn('Could not access navigator.userAgent:', e);
-    }
-    
-    try {
-      platform = navigator.platform || '';
-    } catch (e) {
-      console.warn('Could not access navigator.platform:', e);
+      console.warn('Could not access navigator properties:', e);
+      // Fallback to window properties if navigator fails
+      try {
+        userAgent = String((window as any)?.navigator?.userAgent || '');
+        platform = String((window as any)?.navigator?.platform || '');
+      } catch (e2) {
+        console.warn('Could not access window.navigator:', e2);
+      }
     }
     
     // Detect OS
@@ -132,27 +137,51 @@ export class UniversalSystemAudioManager {
     if (isMobile) deviceType = 'mobile';
     else if (isTablet) deviceType = 'tablet';
     
-    // Feature detection with complete safety
+    // Feature detection with ultra-safe access
     let supportsScreenCapture = false;
     let supportsAudioWorklet = false;
     let mediaDevices = false;
     
     try {
-      supportsScreenCapture = !!(navigator?.mediaDevices?.getDisplayMedia);
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      if (nav && nav.mediaDevices && typeof nav.mediaDevices.getDisplayMedia === 'function') {
+        supportsScreenCapture = true;
+      }
     } catch (e) {
       console.warn('Could not detect screen capture support:', e);
+      try {
+        const winNav = (window as any)?.navigator;
+        if (winNav?.mediaDevices?.getDisplayMedia) {
+          supportsScreenCapture = true;
+        }
+      } catch (e2) {
+        console.warn('Fallback screen capture detection failed:', e2);
+      }
     }
     
     try {
-      supportsAudioWorklet = !!(window.AudioContext && AudioContext.prototype.audioWorklet);
+      if (typeof window !== 'undefined' && window.AudioContext && AudioContext.prototype.audioWorklet) {
+        supportsAudioWorklet = true;
+      }
     } catch (e) {
       console.warn('Could not detect AudioWorklet support:', e);
     }
     
     try {
-      mediaDevices = !!navigator?.mediaDevices;
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      if (nav && nav.mediaDevices) {
+        mediaDevices = true;
+      }
     } catch (e) {
       console.warn('Could not detect media devices support:', e);
+      try {
+        const winNav = (window as any)?.navigator;
+        if (winNav?.mediaDevices) {
+          mediaDevices = true;
+        }
+      } catch (e2) {
+        console.warn('Fallback media devices detection failed:', e2);
+      }
     }
     
     return {
@@ -215,7 +244,13 @@ export class UniversalSystemAudioManager {
    * Get screen audio stream (Chromium browsers)
    */
   private async getScreenAudioStream(): Promise<MediaStream> {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
+    // Safe access to navigator.mediaDevices.getDisplayMedia
+    const nav = typeof navigator !== 'undefined' ? navigator : null;
+    if (!nav?.mediaDevices?.getDisplayMedia) {
+      throw new Error('Screen capture not supported - navigator.mediaDevices.getDisplayMedia not available');
+    }
+
+    const stream = await nav.mediaDevices.getDisplayMedia({
       audio: {
         echoCancellation: this.config.enableEchoCancellation,
         noiseSuppression: this.config.enableNoiseSuppression,
@@ -397,8 +432,14 @@ export class UniversalSystemAudioManager {
       await context.close();
     }
 
-    // Check screen capture
-    support.screenCapture = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    // Check screen capture with safe access
+    try {
+      const nav = typeof navigator !== 'undefined' ? navigator : null;
+      support.screenCapture = !!(nav?.mediaDevices?.getDisplayMedia);
+    } catch (e) {
+      console.warn('Could not check screen capture support:', e);
+      support.screenCapture = false;
+    }
 
     return support;
   }
