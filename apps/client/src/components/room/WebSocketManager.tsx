@@ -109,7 +109,7 @@ export const WebSocketManager = ({
 
   const createConnection = () => {
     const SOCKET_URL = `${process.env.NEXT_PUBLIC_WS_URL}/ws?roomId=${roomId}&username=${username}&clientId=${clientId}`;
-    console.log("Creating new WS connection to", SOCKET_URL);
+    console.log("Creating new WS connection to", SOCKET_URL, "- Fixed endpoint!");
 
     // Clear previous connection if it exists
     if (socket) {
