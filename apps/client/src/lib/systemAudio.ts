@@ -89,12 +89,12 @@ export class UniversalSystemAudioManager {
     else if (isWindows) os = 'Windows';
     else if (isLinux) os = 'Linux';
     
-    // Detect browser
-    const isChrome = /Chrome/.test(userAgent) && /Google Inc/.test(navigator.vendor);
-    const isSafari = /Safari/.test(userAgent) && /Apple Computer/.test(navigator.vendor);
+    // Detect browser - safer approach without vendor property access
+    const isChrome = /Chrome/.test(userAgent) && !!/Chrome/.test(userAgent);
+    const isSafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
     const isFirefox = /Firefox/.test(userAgent);
     const isEdge = /Edg/.test(userAgent);
-    const isBrave = /Brave/.test(userAgent) || !!(navigator as { brave?: unknown }).brave;
+    const isBrave = (userAgent.includes('Brave') || (typeof (navigator as any)?.brave?.isBrave === 'function'));
     
     let browser: DeviceInfo['browser'] = 'unknown';
     if (isBrave) browser = 'Brave';
@@ -111,10 +111,10 @@ export class UniversalSystemAudioManager {
     if (isMobile) deviceType = 'mobile';
     else if (isTablet) deviceType = 'tablet';
     
-    // Feature detection
-    const supportsScreenCapture = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    // Feature detection with safe checks
+    const supportsScreenCapture = !!(navigator?.mediaDevices?.getDisplayMedia);
     const supportsAudioWorklet = !!(window.AudioContext && AudioContext.prototype.audioWorklet);
-    const mediaDevices = !!navigator.mediaDevices;
+    const mediaDevices = !!navigator?.mediaDevices;
     
     return {
       deviceType,
