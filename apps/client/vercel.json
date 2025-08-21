@@ -1,6 +1,9 @@
 {
   "version": 2,
   "name": "beatsync-client",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "installCommand": "bun install",
   "env": {
     "NODE_ENV": "production"
   },
