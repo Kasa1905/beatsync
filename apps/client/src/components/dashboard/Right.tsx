@@ -3,18 +3,13 @@ import { QueueMusic } from "lucide-react";
 import { motion } from "motion/react";
 import Queue from "../Queue";
 import { AudioUploaderMinimal } from "../AudioUploaderMinimal";
-import { TimingDisplay } from "../TimingDisplay";
-import { useGlobalStore } from "@/store/global";
+import { LoadDefaultTracksButton } from "../LoadDefaultTracksButton";
 
 interface RightProps {
   className?: string;
 }
 
 export const Right = ({ className }: RightProps) => {
-  const hasUserStartedSystem = useGlobalStore(
-    (state) => state.hasUserStartedSystem
-  );
-
   return (
     <motion.div
       className={cn(
@@ -31,21 +26,15 @@ export const Right = ({ className }: RightProps) => {
       </div>
 
       {/* Upload Section */}
-      <div className="px-3 py-2">
+      <div className="px-3 py-2 space-y-2">
         <AudioUploaderMinimal />
+        <LoadDefaultTracksButton />
       </div>
 
       {/* Queue */}
       <div className="flex-1 overflow-y-auto">
         <Queue />
       </div>
-
-      {/* Timing Display */}
-      {hasUserStartedSystem && (
-        <div className="px-3 py-2 border-t border-neutral-800/50">
-          <TimingDisplay />
-        </div>
-      )}
     </motion.div>
   );
 };
