@@ -69,9 +69,36 @@ export class UniversalSystemAudioManager {
   }
 
   /**
+   * Fallback device detection when navigator access fails completely
+   */
+  private getFallbackDeviceInfo(): DeviceInfo {
+    console.warn('Using fallback device detection - navigator access failed');
+    return {
+      deviceType: 'desktop', // Assume desktop for fallback
+      os: 'unknown',
+      browser: 'unknown',
+      supportsScreenCapture: false, // Safer to assume not supported
+      supportsAudioWorklet: false,
+      mediaDevices: false
+    };
+  }
+
+  /**
    * Detect device capabilities and type
    */
   private detectDevice(): DeviceInfo {
+    try {
+      return this.performDeviceDetection();
+    } catch (error) {
+      console.error('Device detection failed completely, using fallback:', error);
+      return this.getFallbackDeviceInfo();
+    }
+  }
+
+  /**
+   * Perform the actual device detection with full safety
+   */
+  private performDeviceDetection(): DeviceInfo {
     let userAgent = '';
     let platform = '';
     
