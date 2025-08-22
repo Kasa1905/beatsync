@@ -7,8 +7,11 @@ import { Suspense, useEffect } from "react";
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+    // Only initialize PostHog if we have a real API key (not placeholder)
+    const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    if (posthogKey && posthogKey !== 'your_posthog_key_here' && posthogKey.startsWith('phc_')) {
+      console.log('🔍 Initializing PostHog analytics...');
+      posthog.init(posthogKey, {
         api_host: "/ingest",
         ui_host: "https://us.posthog.com",
         capture_pageview: false, // We capture pageviews manually
@@ -16,6 +19,8 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
 
         // debug: process.env.NODE_ENV === "development",
       });
+    } else {
+      console.log('📊 Analytics disabled (no PostHog key configured)');
     }
   }, []);
 
@@ -33,7 +38,8 @@ function PostHogPageView() {
   const posthog = usePostHog();
 
   useEffect(() => {
-    if (pathname && posthog) {
+    // Only track pageviews if PostHog is properly initialized
+    if (pathname && posthog && posthog.__loaded) {
       let url = window.origin + pathname;
       const search = searchParams.toString();
       if (search) {
