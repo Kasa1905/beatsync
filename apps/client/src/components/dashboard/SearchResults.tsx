@@ -9,7 +9,7 @@ import { ClientActionEnum, TrackType } from "@beatsync/shared";
 import { Plus } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "../PostHogProvider";
 import { toast } from "sonner";
 
 interface SearchResultsProps {

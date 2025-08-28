@@ -12,9 +12,9 @@ import { validateFullRoomId, validatePartialRoomId } from "@/lib/room";
 import { useRoomStore } from "@/store/room";
 import { useQuery } from "@tanstack/react-query";
 import { LogIn, PlusCircle } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "./SafeMotion";
 import { useRouter } from "next/navigation";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "./PostHogProvider";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -132,56 +132,56 @@ export const Join = () => {
   };
 
   return (
-    <motion.div
+    <SafeMotion.div
       className="fixed inset-0 flex flex-col items-center justify-center bg-neutral-950 backdrop-blur-sm no-bounce"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="w-full px-2 sm:px-1 touch-smooth">
-        <motion.div
+        <SafeMotion.div
           className="flex flex-col items-center justify-center p-4 sm:p-6 bg-neutral-900 rounded-lg border border-neutral-800 shadow-xl max-w-[28rem] mx-auto"
           initial={{ opacity: 0, y: 10, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           {numActiveUsers && numActiveUsers > 0 ? (
-            <motion.div
+            <SafeMotion.div
               className="flex items-center gap-1.5 mb-3"
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
             >
-              <motion.div className="relative flex items-center justify-center">
-                <motion.div className="size-2 bg-green-500 rounded-full" />
-                <motion.div className="absolute size-2.5 bg-green-500/30 rounded-full animate-ping" />
-              </motion.div>
+              <SafeMotion.div className="relative flex items-center justify-center">
+                <SafeMotion.div className="size-2 bg-green-500 rounded-full" />
+                <SafeMotion.div className="absolute size-2.5 bg-green-500/30 rounded-full animate-ping" />
+              </SafeMotion.div>
               <span className="text-xs text-neutral-500 ml-0.5">
                 {numActiveUsers} {numActiveUsers === 1 ? "person" : "people"}{" "}
                 listening now
               </span>
-            </motion.div>
+            </SafeMotion.div>
           ) : null}
-          <motion.h2
+          <SafeMotion.h2
             className="text-base font-medium tracking-tight mb-1 text-white"
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.13 }}
           >
             Join a Beatsync Room
-          </motion.h2>
+          </SafeMotion.h2>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-400 mb-5 text-center text-xs"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.15 }}
           >
             Enter a room code to join or create a new room
-          </motion.p>
+          </SafeMotion.p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-            <motion.div
+            <SafeMotion.div
               className="flex justify-center"
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -231,18 +231,18 @@ export const Join = () => {
                   </InputOTP>
                 )}
               />
-            </motion.div>
+            </SafeMotion.div>
             {errors.roomId && (
-              <motion.p
+              <SafeMotion.p
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 className="text-xs text-red-500 text-center mt-1"
               >
                 {errors.roomId.message}
-              </motion.p>
+              </SafeMotion.p>
             )}
 
-            <motion.div
+            <SafeMotion.div
               className="flex items-center justify-center mt-5"
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -250,8 +250,8 @@ export const Join = () => {
             >
               <div className="text-sm text-neutral-400">
                 You&apos;ll join as{" "}
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.span
+                <SafeMotion.AnimatePresence mode="wait" initial={false}>
+                  <SafeMotion.span
                     key={username}
                     className="text-primary font-medium inline-block"
                     initial={{
@@ -271,8 +271,8 @@ export const Join = () => {
                     }}
                   >
                     {username}
-                  </motion.span>
-                </AnimatePresence>
+                  </SafeMotion.span>
+                </SafeMotion.AnimatePresence>
               </div>
               <Button
                 type="button"
@@ -283,24 +283,24 @@ export const Join = () => {
               >
                 Regenerate
               </Button>
-            </motion.div>
+            </SafeMotion.div>
 
             <div className="flex flex-col gap-3 mt-5">
               {/* Show auto-join indicator when room code is complete */}
               {roomId.length === 6 && !isJoining && (
-                <motion.div
+                <SafeMotion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="w-full px-4 py-2 bg-primary/20 border border-primary/30 text-primary rounded-full font-medium text-sm flex items-center justify-center"
                 >
                   <LogIn size={16} className="mr-2" />
                   <span>Auto-joining room...</span>
-                </motion.div>
+                </SafeMotion.div>
               )}
 
               {/* Only show join button if room code is not complete */}
               {roomId.length < 6 && (
-                <motion.div
+                <SafeMotion.div
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
@@ -316,7 +316,7 @@ export const Join = () => {
                     }}
                   >
                     {isJoining ? (
-                      <motion.div
+                      <SafeMotion.div
                         transition={{
                           repeat: Infinity,
                           duration: 1,
@@ -324,16 +324,16 @@ export const Join = () => {
                         }}
                       >
                         <LogIn size={16} className="mr-2" />
-                      </motion.div>
+                      </SafeMotion.div>
                     ) : (
                       <LogIn size={16} className="mr-2" />
                     )}
                     <span>{isJoining ? "Joining..." : "Join room"}</span>
                   </Button>
-                </motion.div>
+                </SafeMotion.div>
               )}
 
-              <motion.div
+              <SafeMotion.div
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
@@ -347,7 +347,7 @@ export const Join = () => {
                   disabled={isJoining || isCreating}
                 >
                   {isCreating ? (
-                    <motion.div
+                    <SafeMotion.div
                       transition={{
                         repeat: Infinity,
                         duration: 1,
@@ -355,27 +355,27 @@ export const Join = () => {
                       }}
                     >
                       <PlusCircle size={16} className="mr-2" />
-                    </motion.div>
+                    </SafeMotion.div>
                   ) : (
                     <PlusCircle size={16} className="mr-2" />
                   )}
                   <span>{isCreating ? "Creating..." : "Create new room"}</span>
                 </Button>
-              </motion.div>
+              </SafeMotion.div>
             </div>
           </form>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-500 mt-5 text-center text-xs leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
             Use native device speakers.
-          </motion.p>
+          </SafeMotion.p>
 
           {/* Divider */}
-          <motion.div
+          <SafeMotion.div
             className="w-full h-px bg-neutral-800 my-4"
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{ opacity: 1, scaleX: 1 }}
@@ -383,11 +383,11 @@ export const Join = () => {
           />
 
           {/* Social links removed as requested */}
-        </motion.div>
+        </SafeMotion.div>
 
         {/* Active Rooms Section */}
         <ActiveRooms />
       </div>
-    </motion.div>
+    </SafeMotion.div>
   );
 };

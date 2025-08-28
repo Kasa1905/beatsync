@@ -8,22 +8,31 @@ import {
 } from "@beatsync/shared/";
 import { z } from "zod";
 import { SpotifyMusicProvider } from "../lib/spotify";
+import { iTunesMusicProvider } from "../lib/itunes";
 
 export class MusicProviderManager {
   private providerUrl: string | undefined;
   private spotifyProvider: SpotifyMusicProvider | null;
+  private iTunesProvider: iTunesMusicProvider;
 
   constructor() {
     // Lazy initialization - don't throw in constructor for test compatibility
     this.providerUrl = process.env.PROVIDER_URL;
+    
+    // Initialize iTunes provider as fallback (always available)
+    this.iTunesProvider = iTunesMusicProvider.create();
     
     // Initialize Spotify provider if configured
     this.spotifyProvider = SpotifyMusicProvider.create();
     
     if (this.spotifyProvider) {
       console.log("✅ Spotify music provider initialized");
-    } else if (!this.providerUrl) {
-      console.log("⚠️ No music providers configured - using mock results");
+    }
+    
+    console.log("✅ iTunes music provider initialized (fallback)");
+    
+    if (!this.spotifyProvider && !this.providerUrl) {
+      console.log("⚠️ Primary providers not configured - using iTunes fallback");
     }
   }
 
@@ -47,7 +56,20 @@ export class MusicProviderManager {
       // Try Spotify first if available
       if (this.spotifyProvider) {
         console.log(`🎵 Searching Spotify (${category}) for: "${query}"`);
-        return await this.spotifyProvider.searchAll(query, category, limit, offset);
+        try {
+          return await this.spotifyProvider.searchAll(query, category, limit, offset);
+        } catch (spotifyError) {
+          console.warn("Spotify search failed, falling back to iTunes:", spotifyError);
+          return await this.iTunesProvider.searchCategorized(query, category, limit, offset);
+        }
+      }
+      
+      // Use iTunes as primary fallback
+      console.log(`🍎 Searching iTunes (${category}) for: "${query}"`);
+      try {
+        return await this.iTunesProvider.searchCategorized(query, category, limit, offset);
+      } catch (iTunesError) {
+        console.warn("iTunes search failed, trying legacy search:", iTunesError);
       }
       
       // Fall back to legacy search for backward compatibility

@@ -28,13 +28,11 @@ export class ErrorBoundary extends Component<Props, State> {
     this.props.onError?.(error, errorInfo);
 
     // Report to analytics/error tracking service
-    if (typeof window !== 'undefined' && (window as typeof window & { posthog?: { capture: (event: string, properties: Record<string, unknown>) => void } }).posthog) {
-      (window as typeof window & { posthog: { capture: (event: string, properties: Record<string, unknown>) => void } }).posthog.capture('error_boundary_triggered', {
-        error: error.message,
-        stack: error.stack,
-        componentStack: errorInfo.componentStack,
-      });
-    }
+    console.log('🔥 [Mock Analytics] Error Boundary Triggered:', {
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+    });
   }
 
   private handleRetry = () => {

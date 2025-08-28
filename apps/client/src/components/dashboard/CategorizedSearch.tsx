@@ -7,7 +7,7 @@ import { ClientActionEnum } from "@beatsync/shared";
 import { Music, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "../PostHogProvider";
 import { toast } from "sonner";
 import Image from "next/image";
 

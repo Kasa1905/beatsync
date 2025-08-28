@@ -6,7 +6,7 @@ import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum } from "@beatsync/shared";
 import { Lock, Unlock } from "lucide-react";
 import { motion } from "motion/react";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "./PostHogProvider";
 import { useState } from "react";
 
 export const RoomPrivacyToggle = () => {

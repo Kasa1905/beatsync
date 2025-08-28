@@ -3,7 +3,7 @@
 import { useGlobalStore, useCanMutate } from "@/store/global";
 import { Construction, Orbit, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "../PostHogProvider";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 

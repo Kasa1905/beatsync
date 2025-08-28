@@ -1,13 +1,30 @@
 // iTunes API Provider for BeatSync
 // Free music search using Apple's iTunes API
-// This is a JavaScript version for reference/testing
+
+import { CategorizedSearchResponseType, SearchCategoryType } from "@beatsync/shared/";
+
+interface iTunesTrack {
+  trackId: number;
+  trackName: string;
+  artistName: string;
+  collectionName: string;
+  artworkUrl100: string;
+  artworkUrl60: string;
+  previewUrl: string;
+  trackTimeMillis: number;
+  releaseDate: string;
+  primaryGenreName: string;
+}
+
+interface iTunesResponse {
+  resultCount: number;
+  results: iTunesTrack[];
+}
 
 export class iTunesMusicProvider {
-  constructor() {
-    this.baseUrl = 'https://itunes.apple.com/search';
-  }
+  private baseUrl = 'https://itunes.apple.com/search';
 
-  async search(query, limit = 20) {
+  async search(query: string, limit = 20): Promise<CategorizedSearchResponseType> {
     try {
       const url = new URL(this.baseUrl);
       url.searchParams.set('term', query);
@@ -21,7 +38,7 @@ export class iTunesMusicProvider {
         throw new Error(`iTunes API error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data: iTunesResponse = await response.json();
       
       // Convert iTunes format to BeatSync format
       return {
@@ -33,7 +50,7 @@ export class iTunesMusicProvider {
             artist: track.artistName || 'Unknown Artist',
             duration: track.trackTimeMillis ? Math.floor(track.trackTimeMillis / 1000) : 30,
             thumbnail: track.artworkUrl100 || track.artworkUrl60 || '',
-            source: 'external',
+            source: 'external' as const,
             spotifyId: `itunes-${track.trackId}`,
             previewUrl: track.previewUrl || '',
             album: {
@@ -52,7 +69,12 @@ export class iTunesMusicProvider {
     }
   }
 
-  async searchCategorized(query, category = 'tracks', limit = 20, offset = 0) {
+  async searchCategorized(
+    query: string, 
+    category: SearchCategoryType = 'tracks', 
+    limit = 20, 
+    offset = 0
+  ): Promise<CategorizedSearchResponseType> {
     if (category !== 'tracks') {
       // iTunes API primarily supports track search
       return {
@@ -66,19 +88,16 @@ export class iTunesMusicProvider {
     return await this.search(query, limit);
   }
 
-  async stream(trackId) {
+  async stream(trackId: string): Promise<never> {
     // iTunes only provides 30-second previews
     // For full tracks, you'd need the actual audio file URLs
     throw new Error('iTunes API only provides 30-second previews. Full streaming not available.');
   }
 
-  // Factory method for creating instances
-  static create() {
+  /**
+   * Create a configured iTunes provider instance
+   */
+  static create(): iTunesMusicProvider {
     return new iTunesMusicProvider();
   }
 }
-
-// Usage example:
-// const provider = new iTunesMusicProvider();
-// const results = await provider.search('Taylor Swift');
-// console.log(results);

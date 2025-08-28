@@ -5,7 +5,7 @@ import { cn, trimFileName } from "@/lib/utils";
 import { useCanMutate } from "@/store/global";
 import { useRoomStore } from "@/store/room";
 import { CloudUpload, Plus } from "lucide-react";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "./PostHogProvider";
 import { useState } from "react";
 import { toast } from "sonner";
 

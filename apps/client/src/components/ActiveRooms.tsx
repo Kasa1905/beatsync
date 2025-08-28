@@ -10,7 +10,7 @@ import { ChevronRight, Music, Users2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "./PostHogProvider";
 
 export const ActiveRooms = () => {
   const router = useRouter();

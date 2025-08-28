@@ -1,61 +1,36 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
-import posthog from "posthog-js";
-import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
-import { Suspense, useEffect } from "react";
+import React, { createContext, useContext } from "react";
+
+// Create a mock PostHog context
+const PostHogContext = createContext({
+  capture: (event: string, properties?: Record<string, any>) => {},
+  identify: (userId: string, properties?: Record<string, any>) => {},
+  reset: () => {},
+});
+
+// Mock usePostHog hook
+export function usePostHog() {
+  return useContext(PostHogContext);
+}
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    // Only initialize PostHog if we have a real API key (not placeholder)
-    const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-    if (posthogKey && posthogKey !== 'your_posthog_key_here' && posthogKey.startsWith('phc_')) {
-      console.log('🔍 Initializing PostHog analytics...');
-      posthog.init(posthogKey, {
-        api_host: "/ingest",
-        ui_host: "https://us.posthog.com",
-        capture_pageview: false, // We capture pageviews manually
-        capture_pageleave: true, // Enable pageleave capture
-
-        // debug: process.env.NODE_ENV === "development",
-      });
-    } else {
-      console.log('📊 Analytics disabled (no PostHog key configured)');
-    }
-  }, []);
+  // Mock PostHog instance
+  const mockPostHog = {
+    capture: (event: string, properties?: Record<string, any>) => {
+      console.log('📊 [Mock Analytics]', event, properties);
+    },
+    identify: (userId: string, properties?: Record<string, any>) => {
+      console.log('👤 [Mock Analytics] Identify:', userId, properties);
+    },
+    reset: () => {
+      console.log('🔄 [Mock Analytics] Reset');
+    },
+  };
 
   return (
-    <PHProvider client={posthog}>
-      <SuspendedPostHogPageView />
+    <PostHogContext.Provider value={mockPostHog}>
       {children}
-    </PHProvider>
-  );
-}
-
-function PostHogPageView() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const posthog = usePostHog();
-
-  useEffect(() => {
-    // Only track pageviews if PostHog is properly initialized
-    if (pathname && posthog && posthog.__loaded) {
-      let url = window.origin + pathname;
-      const search = searchParams.toString();
-      if (search) {
-        url += "?" + search;
-      }
-      posthog.capture("$pageview", { $current_url: url });
-    }
-  }, [pathname, searchParams, posthog]);
-
-  return null;
-}
-
-function SuspendedPostHogPageView() {
-  return (
-    <Suspense fallback={null}>
-      <PostHogPageView />
-    </Suspense>
+    </PostHogContext.Provider>
   );
 }

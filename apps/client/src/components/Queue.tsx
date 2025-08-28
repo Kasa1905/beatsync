@@ -11,7 +11,7 @@ import {
   Play,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "./PostHogProvider";
 import LoadDefaultTracksButton from "./LoadDefaultTracksButton";
 
 export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {

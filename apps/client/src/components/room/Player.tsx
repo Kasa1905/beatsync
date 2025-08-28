@@ -9,7 +9,7 @@ import {
   SkipBack,
   SkipForward,
 } from "lucide-react";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "../PostHogProvider";
 import { useCallback, useEffect, useState } from "react";
 import { Slider } from "../ui/slider";
 

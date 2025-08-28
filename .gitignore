@@ -8,3 +8,18 @@ node_modules
 apps/server/uploads/*
 .DS_Store
 .vercel
+
+# Environment files with real API keys (LOCAL ONLY - NEVER COMMIT)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+apps/client/.env.local
+apps/server/.env.local
+apps/shared/.env.local
+
+# Secret files
+secrets/
+*.secret
+*.key
+*.pem

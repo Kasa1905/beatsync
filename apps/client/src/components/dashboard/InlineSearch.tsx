@@ -7,7 +7,7 @@ import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum } from "@beatsync/shared";
 import { ArrowDown, Search as SearchIcon, X, ZapIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "../PostHogProvider";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { CategorizedSearch } from "./CategorizedSearch";
