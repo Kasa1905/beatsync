@@ -6,7 +6,8 @@ import { useCanMutate, useGlobalStore } from "@/store/global";
 import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum } from "@beatsync/shared";
 import { ArrowDown, Search as SearchIcon, X, ZapIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
+import { motion } from "motion/react";
 import { usePostHog } from "../PostHogProvider";
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -43,9 +44,11 @@ export function InlineSearch() {
 
   // Cleanup timeout on unmount
   React.useEffect(() => {
+    const currentTimeout = blurTimeoutRef.current;
+    
     return () => {
-      if (blurTimeoutRef.current) {
-        clearTimeout(blurTimeoutRef.current);
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
       }
     };
   }, []);
@@ -176,9 +179,9 @@ export function InlineSearch() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative group">
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5">
-            <AnimatePresence mode="wait">
+            <SafeMotion.AnimatePresence>
               {activeStreamJobs > 0 ? (
-                <motion.div
+                <SafeMotion.div
                   key="streaming"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -215,9 +218,9 @@ export function InlineSearch() {
                   <span className="text-xs font-mono text-green-400 font-medium">
                     {activeStreamJobs}
                   </span>
-                </motion.div>
+                </SafeMotion.div>
               ) : showCheckmark ? (
-                <motion.div
+                <SafeMotion.div
                   key="checkmark"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -226,9 +229,9 @@ export function InlineSearch() {
                   className="w-5 h-5 flex items-center justify-center"
                 >
                   <ArrowDown className="w-full h-full text-green-500" />
-                </motion.div>
+                </SafeMotion.div>
               ) : (
-                <motion.div
+                <SafeMotion.div
                   key="search"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -244,9 +247,9 @@ export function InlineSearch() {
                         : "text-neutral-600"
                     )}
                   />
-                </motion.div>
+                </SafeMotion.div>
               )}
-            </AnimatePresence>
+            </SafeMotion.AnimatePresence>
           </div>
           <input
             {...register("query")}
@@ -268,9 +271,9 @@ export function InlineSearch() {
             )}
           />
           <div className="absolute right-1 top-1/2 transform -translate-y-1/2 pointer-events-none w-12 flex items-center justify-center">
-            <AnimatePresence mode="wait">
+            <SafeMotion.AnimatePresence>
               {showCheckmark ? (
-                <motion.div
+                <SafeMotion.div
                   key="checkmark"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -279,9 +282,9 @@ export function InlineSearch() {
                   className="flex items-center justify-center"
                 >
                   <ArrowDown className="w-5 h-5 text-green-500" />
-                </motion.div>
+                </SafeMotion.div>
               ) : (
-                <motion.div
+                <SafeMotion.div
                   key="shortcut"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -299,9 +302,9 @@ export function InlineSearch() {
                   >
                     <span className="text-xs">⌘</span>K
                   </kbd>
-                </motion.div>
+                </SafeMotion.div>
               )}
-            </AnimatePresence>
+            </SafeMotion.AnimatePresence>
           </div>
         </div>
       </form>
@@ -313,9 +316,9 @@ export function InlineSearch() {
       </div>
 
       {/* Search Results Dropdown */}
-      <AnimatePresence>
+      <SafeMotion.AnimatePresence>
         {showResults && canMutate && (
-          <motion.div
+          <SafeMotion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -358,9 +361,9 @@ export function InlineSearch() {
                 </div>
               )}
             </div>
-          </motion.div>
+          </SafeMotion.div>
         )}
-      </AnimatePresence>
+      </SafeMotion.AnimatePresence>
     </div>
   );
 }

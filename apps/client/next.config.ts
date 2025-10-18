@@ -4,7 +4,14 @@ const nextConfig: NextConfig = {
   /* config options here */
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-icons',
+      'react-icons',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu'
+    ],
     turbo: {
       rules: {
         '*.svg': {
@@ -13,6 +20,8 @@ const nextConfig: NextConfig = {
         },
       },
     },
+    optimizeCss: true, // Enable CSS optimization
+    webpackBuildWorker: true, // Enable parallel builds
   },
   
   // Compression and optimization
@@ -23,27 +32,74 @@ const nextConfig: NextConfig = {
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size
     if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-          ui: {
-            test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-            name: 'ui',
-            chunks: 'all',
-          },
-          motion: {
-            test: /[\\/]node_modules[\\/](motion|framer-motion)[\\/]/,
-            name: 'motion',
-            chunks: 'all',
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          minSize: 20000,
+          maxSize: 70000,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              priority: 10,
+              enforce: true,
+            },
+            ui: {
+              test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+              name: 'ui',
+              chunks: 'all',
+              priority: 20,
+            },
+            motion: {
+              test: /[\\/]node_modules[\\/](motion|framer-motion)[\\/]/,
+              name: 'motion',
+              chunks: 'all',
+              priority: 20,
+            },
+            commons: {
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              name: 'commons',
+              chunks: 'all',
+              priority: 30,
+            },
           },
         },
+        runtimeChunk: 'single',
+        minimizer: [...(config.optimization.minimizer || [])],
       };
     }
+
+    // Optimize image loading
+    config.module.rules.push({
+      test: /\.(png|jpe?g|gif|webp)$/i,
+      use: [
+        {
+          loader: 'image-webpack-loader',
+          options: {
+            mozjpeg: {
+              progressive: true,
+              quality: 65,
+            },
+            optipng: {
+              enabled: true,
+            },
+            pngquant: {
+              quality: [0.65, 0.90],
+              speed: 4,
+            },
+            gifsicle: {
+              interlaced: false,
+            },
+            webp: {
+              quality: 75,
+            },
+          },
+        },
+      ],
+    });
+
     return config;
   },
   
@@ -54,7 +110,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Permissions-Policy",
-            value: "camera=(self), microphone=(self), display-capture=(self), screen-wake-lock=(self)"
+            value: "camera=(self), microphone=(self), display-capture=(self '*'), screen-wake-lock=(self)"
           },
           // Performance headers
           {
@@ -81,13 +137,33 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Cache images
+      {
+        source: "/:path*.(jpg|jpeg|gif|png|svg|ico|webp)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable"
+          },
+        ],
+      },
       // Cache audio files
       {
         source: "/:path*.(mp3|wav|ogg|m4a)",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=86400"
+            value: "public, max-age=604800, stale-while-revalidate=86400"
+          },
+        ],
+      },
+      // Cache fonts
+      {
+        source: "/fonts/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable"
           },
         ],
       },
@@ -130,6 +206,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "i.ytimg.com",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
       },
     ],
   },

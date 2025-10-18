@@ -1,10 +1,11 @@
 "use client";
 
 import { useNetworkInfo } from "@/hooks/useNetworkInfo";
-import { motion, MotionProps } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
+import { HTMLMotionProps } from "motion/react";
 import React from "react";
 
-interface OptimizedMotionProps extends MotionProps {
+interface OptimizedMotionProps extends HTMLMotionProps<'div'> {
   children: React.ReactNode;
   reduceMotion?: boolean;
   fallbackComponent?: React.ComponentType<React.PropsWithChildren>;
@@ -53,7 +54,7 @@ export const OptimizedMotion = ({
   }
 
   // Otherwise, use full motion
-  return <motion.div {...motionProps}>{children}</motion.div>;
+  return <SafeMotion.div {...motionProps}>{children}</SafeMotion.div>;
 };
 
 // Optimized variants that are lighter on slow connections

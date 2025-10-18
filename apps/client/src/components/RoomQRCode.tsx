@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { useRoomStore } from "@/store/room";
 import { QrCode, Share2 } from "lucide-react";
-import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { SafeMotion } from "@components/SafeMotion";
+import { useEffect, useState, useCallback } from "react";
 
 export const RoomQRCode = () => {
   const roomId = useRoomStore((state) => state.roomId);
@@ -21,7 +22,7 @@ export const RoomQRCode = () => {
 
   const roomUrl = `${window.location.origin}/room/${roomId}`;
 
-  const generateQRCode = async () => {
+  const generateQRCode = useCallback(async () => {
     if (!roomId) return;
     
     setIsLoading(true);
@@ -34,7 +35,7 @@ export const RoomQRCode = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [roomId, roomUrl]);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -65,9 +66,9 @@ export const RoomQRCode = () => {
 
   useEffect(() => {
     if (roomId) {
-      generateQRCode();
+      void generateQRCode();
     }
-  }, [roomId]);
+  }, [roomId, generateQRCode]);
 
   if (!roomId) return null;
 
@@ -92,7 +93,7 @@ export const RoomQRCode = () => {
         
         <div className="flex flex-col items-center space-y-4">
           {/* QR Code */}
-          <motion.div
+          <SafeMotion.div
             className="bg-white p-4 rounded-lg"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -103,18 +104,21 @@ export const RoomQRCode = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-600"></div>
               </div>
             ) : qrDataUrl ? (
-              <img
-                src={qrDataUrl}
-                alt={`QR code for room ${roomId}`}
-                className="w-[200px] h-[200px]"
-                loading="lazy"
-              />
+              <div className="relative w-[200px] h-[200px]">
+                <Image
+                  src={qrDataUrl}
+                  alt={`QR code for room ${roomId}`}
+                  fill
+                  className="object-contain"
+                  unoptimized // Since this is a data URL
+                />
+              </div>
             ) : (
               <div className="w-[200px] h-[200px] flex items-center justify-center text-neutral-600">
                 Failed to load QR code
               </div>
             )}
-          </motion.div>
+          </SafeMotion.div>
 
           {/* Share URL */}
           <div className="w-full">

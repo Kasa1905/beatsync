@@ -1,7 +1,7 @@
 import { UserGrid } from "@/components/room/UserGrid";
 import { cn } from "@/lib/utils";
 import { Info } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { AudioControls } from "../AudioControls";
 
 interface SpatialAudioProps {
@@ -10,17 +10,17 @@ interface SpatialAudioProps {
 
 export const SpatialAudio = ({ className }: SpatialAudioProps) => {
   return (
-    <motion.div className={cn("w-full h-full px-4", className)}>
+    <SafeMotion.div className={cn("w-full h-full px-4", className)}>
       {/* Spatial Audio Controls */}
-      <motion.div className="flex-1 flex flex-col">
+      <SafeMotion.div className="flex-1 flex flex-col">
         {/* Spatial Audio Grid */}
         <UserGrid />
 
         {/* Audio Effects Controls */}
         <AudioControls />
-      </motion.div>
+      </SafeMotion.div>
 
-      <motion.div className="flex flex-col gap-3 px-4 py-3 mt-1 bg-neutral-800/30 rounded-lg mb-3 text-neutral-400">
+      <SafeMotion.div className="flex flex-col gap-3 px-4 py-3 mt-1 bg-neutral-800/30 rounded-lg mb-3 text-neutral-400">
         <div className="flex items-start gap-2">
           <div>
             <h5 className="text-xs font-medium text-neutral-300 mb-1 flex items-center gap-1.5">
@@ -34,7 +34,7 @@ export const SpatialAudio = ({ className }: SpatialAudioProps) => {
             </p>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </SafeMotion.div>
+    </SafeMotion.div>
   );
 };

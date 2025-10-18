@@ -10,7 +10,7 @@ import {
   Pause,
   Play,
 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { usePostHog } from "./PostHogProvider";
 import LoadDefaultTracksButton from "./LoadDefaultTracksButton";
 
@@ -69,7 +69,7 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
       {/* <h2 className="text-xl font-bold mb-2 select-none">Beatsync</h2> */}
       <div className="space-y-1">
         {audioSources.length > 0 ? (
-          <AnimatePresence initial={true}>
+          <SafeMotion.AnimatePresence initial={true}>
             {/* Ensure keys are stable and unique even if duplicates attempted */}
             {audioSources.map((sourceState, index) => {
               const isSelected = sourceState.source.url === selectedAudioId;
@@ -78,7 +78,7 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
               const isError = sourceState.status === "error";
 
               return (
-                <motion.div
+                <SafeMotion.div
                   key={sourceState.source.url}
                   layout
                   initial={{ opacity: 0, y: 20 }}
@@ -121,9 +121,9 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
                 >
                   {/* Track number / Play icon */}
                   <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center relative cursor-default select-none">
-                    <AnimatePresence mode="wait">
+                    <SafeMotion.AnimatePresence mode="wait">
                       {isLoading ? (
-                        <motion.div
+                        <SafeMotion.div
                           key="loading"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -137,9 +137,9 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
                           className="absolute inset-0 flex items-center justify-center"
                         >
                           <Loader2 className="size-4 animate-spin text-neutral-400" />
-                        </motion.div>
+                        </SafeMotion.div>
                       ) : isError ? (
-                        <motion.div
+                        <SafeMotion.div
                           key="error"
                           initial={{ opacity: 0 }}
                           animate={{
@@ -152,9 +152,9 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
                           className="absolute inset-0 flex items-center justify-center"
                         >
                           <AlertCircle className="size-4 text-red-400" />
-                        </motion.div>
+                        </SafeMotion.div>
                       ) : (
-                        <motion.div
+                        <SafeMotion.div
                           key="loaded"
                           initial={{ opacity: 0 }}
                           animate={{
@@ -196,9 +196,9 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
                               </span>
                             )}
                           </div>
-                        </motion.div>
+                        </SafeMotion.div>
                       )}
-                    </AnimatePresence>
+                    </SafeMotion.AnimatePresence>
                   </div>
 
                   {/* Track name */}
@@ -287,12 +287,12 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
                       </DropdownMenuContent>
                     </DropdownMenu> */}
                   </div>
-                </motion.div>
+                </SafeMotion.div>
               );
             })}
-          </AnimatePresence>
+          </SafeMotion.AnimatePresence>
         ) : (
-          <motion.div
+          <SafeMotion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
@@ -308,7 +308,7 @@ export const Queue = ({ className, ...rest }: React.ComponentProps<"div">) => {
             ) : (
               "No tracks available"
             )}
-          </motion.div>
+          </SafeMotion.div>
         )}
       </div>
     </div>

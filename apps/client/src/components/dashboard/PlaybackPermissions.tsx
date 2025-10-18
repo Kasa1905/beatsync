@@ -8,7 +8,7 @@ import {
   PlaybackControlsPermissionsEnum,
 } from "@beatsync/shared";
 import { Crown, Play, Users } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 
 export const PlaybackPermissions = () => {
   const currentUser = useGlobalStore((state) => state.currentUser);
@@ -62,7 +62,7 @@ export const PlaybackPermissions = () => {
           )}
         >
           {/* Sliding Background */}
-          <motion.div
+          <SafeMotion.div
             className={cn(
               "absolute inset-y-0.5 w-1/2 transition-colors duration-300 rounded-lg",
               isAdminOnly ? "bg-yellow-600" : "bg-green-600"

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useCanMutate, useGlobalStore } from "@/store/global";
 import { Volume1, Volume2, VolumeX } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { throttle } from "throttle-debounce";
 import { Slider } from "../ui/slider";
@@ -174,7 +174,7 @@ export const GlobalVolumeControl = ({
 
   // Desktop layout (horizontal, Spotify-style)
   return (
-    <motion.div
+    <SafeMotion.div
       className={cn("flex items-center gap-2", className)}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -213,6 +213,6 @@ export const GlobalVolumeControl = ({
       {/* <div className="text-xs text-neutral-400 min-w-[2.5rem]">
         {Math.round(isDragging ? localVolume : globalVolume * 100)}%
       </div> */}
-    </motion.div>
+    </SafeMotion.div>
   );
 };

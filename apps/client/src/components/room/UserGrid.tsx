@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useCanMutate, useGlobalStore } from "@/store/global";
 import { ClientType, GRID } from "@beatsync/shared";
 import { ArrowUp, Crown, HeadphonesIcon, Rotate3D } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SpatialGainMeter } from "../dashboard/SpatialGainMeter";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -32,7 +32,7 @@ const ClientAvatar = memo<ClientAvatarProps>(
     return (
       <Tooltip key={client.clientId}>
         <TooltipTrigger asChild>
-          <motion.div
+          <SafeMotion.div
             className={cn(
               "absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300",
               "z-10"
@@ -87,7 +87,7 @@ const ClientAvatar = memo<ClientAvatarProps>(
                 </div>
               )}
             </div>
-          </motion.div>
+          </SafeMotion.div>
         </TooltipTrigger>
         <TooltipContent side="top">
           <div className="text-xs font-medium">{client.username}</div>
@@ -392,7 +392,7 @@ export const UserGrid = () => {
                 {/* Listening Source Indicator with drag capability */}
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <motion.div
+                    <SafeMotion.div
                       className={cn(
                         "absolute z-40",
                         canMutate ? "cursor-move" : ""
@@ -432,7 +432,7 @@ export const UserGrid = () => {
                         </span>
                         <HeadphonesIcon className="absolute h-1.5 w-1.5 md:h-2 md:w-2 text-primary-100 opacity-80" />
                       </div>
-                    </motion.div>
+                    </SafeMotion.div>
                   </TooltipTrigger>
                   <TooltipContent side="top">
                     <div className="text-xs font-medium">Listening Source</div>

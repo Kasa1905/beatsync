@@ -1,7 +1,7 @@
 "use client";
 import { MAX_NTP_MEASUREMENTS, useGlobalStore } from "@/store/global";
 import { Crown, Hash, Users } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import Link from "next/link";
 import { SyncProgress } from "../ui/SyncProgress";
 
@@ -40,7 +40,7 @@ export const TopBar = ({ roomId }: TopBarProps) => {
 
           {/* NTP Measurements Indicator */}
           <div className="items-center hidden md:flex">
-            <motion.svg
+            <SafeMotion.svg
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -55,7 +55,7 @@ export const TopBar = ({ roomId }: TopBarProps) => {
                 strokeWidth="1.5"
                 className="text-neutral-600"
               />
-              <motion.circle
+              <SafeMotion.circle
                 cx="7"
                 cy="7"
                 r="5"
@@ -76,7 +76,7 @@ export const TopBar = ({ roomId }: TopBarProps) => {
                 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               />
-            </motion.svg>
+            </SafeMotion.svg>
             <span className="text-xs">
               {ntpMeasurements.length}/{MAX_NTP_MEASUREMENTS}
             </span>
@@ -110,12 +110,12 @@ export const TopBar = ({ roomId }: TopBarProps) => {
 
   // Use the existing SyncProgress component for loading/syncing states
   return (
-    <AnimatePresence>
+    <SafeMotion.AnimatePresence>
       {isLoadingAudio && (
-        <motion.div exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+        <SafeMotion.div exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
           <SyncProgress />
-        </motion.div>
+        </SafeMotion.div>
       )}
-    </AnimatePresence>
+    </SafeMotion.AnimatePresence>
   );
 };

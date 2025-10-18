@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGlobalStore } from "@/store/global";
 import { Library, ListMusic, Rotate3D, Activity, Upload } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { TopBar } from "../room/TopBar";
 import { SyncProgress } from "../ui/SyncProgress";
 import { AudioMonitoringDashboard } from "../room/AudioMonitoringDashboard";
@@ -44,7 +44,7 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
       {!isSynced && hasUserStartedSystem && !isLoadingAudio && <SyncProgress />}
 
       {isReady && (
-        <motion.div
+        <SafeMotion.div
           className="flex flex-1 flex-col overflow-hidden min-h-0"
           variants={containerVariants}
           initial="hidden"
@@ -98,13 +98,13 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
               </TabsList>
 
               {/* Tab Content Area - Scrolls independently */}
-              <AnimatePresence mode="sync">
+              <SafeMotion.AnimatePresence>
                 <TabsContent
                   key="library"
                   value="library"
                   className="flex-1 overflow-y-auto mt-0 min-h-0"
                 >
-                  <motion.div
+                  <SafeMotion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -112,14 +112,14 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                     className="h-full"
                   >
                     <Left className="flex h-full w-full" />
-                  </motion.div>
+                  </SafeMotion.div>
                 </TabsContent>
                 <TabsContent
                   key="queue"
                   value="queue"
                   className="flex-1 overflow-y-auto mt-0 min-h-0"
                 >
-                  <motion.div
+                  <SafeMotion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -127,14 +127,14 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                     className="h-full"
                   >
                     <Main />
-                  </motion.div>
+                  </SafeMotion.div>
                 </TabsContent>
                 <TabsContent
                   key="spatial"
                   value="spatial"
                   className="flex-1 overflow-y-auto mt-0 min-h-0"
                 >
-                  <motion.div
+                  <SafeMotion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -142,14 +142,14 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                     className="h-full"
                   >
                     <Right className="flex h-full w-full" />
-                  </motion.div>
+                  </SafeMotion.div>
                 </TabsContent>
                 <TabsContent
                   key="stream"
                   value="stream"
                   className="flex-1 overflow-y-auto mt-0 min-h-0"
                 >
-                  <motion.div
+                  <SafeMotion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -157,14 +157,14 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                     className="h-full p-4 space-y-4"
                   >
                     <AudioUploaderMinimal />
-                  </motion.div>
+                  </SafeMotion.div>
                 </TabsContent>
                 <TabsContent
                   key="monitor"
                   value="monitor"
                   className="flex-1 overflow-y-auto mt-0 min-h-0"
                 >
-                  <motion.div
+                  <SafeMotion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -172,15 +172,15 @@ export const Dashboard = ({ roomId }: DashboardProps) => {
                     className="h-full p-4"
                   >
                     <AudioMonitoringDashboard />
-                  </motion.div>
+                  </SafeMotion.div>
                 </TabsContent>
-              </AnimatePresence>
+              </SafeMotion.AnimatePresence>
             </Tabs>
           </div>
 
           {/* Bottom Player: Fixed height, outside the scrollable/tab area */}
           <Bottom />
-        </motion.div>
+        </SafeMotion.div>
       )}
     </div>
   );

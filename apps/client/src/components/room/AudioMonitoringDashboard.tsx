@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { AudioStreamVisualizer } from "./AudioStreamVisualizer";
 import { Activity, Headphones, Radio, TrendingUp } from "lucide-react";
 
@@ -110,7 +110,7 @@ export const AudioMonitoringDashboard = ({ className = "" }: AudioMonitoringDash
         <div className="flex items-center gap-2 mb-3">
           <Activity className="w-5 h-5 text-blue-400" />
           <h3 className="text-lg font-semibold text-white">Audio Stream Monitor</h3>
-          <motion.div 
+          <SafeMotion.div 
             className="w-2 h-2 bg-green-500 rounded-full"
             animate={{ opacity: [1, 0.3, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -169,9 +169,9 @@ export const AudioMonitoringDashboard = ({ className = "" }: AudioMonitoringDash
       <div className="space-y-3">
         <h4 className="text-sm font-medium text-gray-300 mb-2">Active Audio Streams</h4>
         
-        <AnimatePresence>
+        <SafeMotion.AnimatePresence>
           {audioStreams.map((stream) => (
-            <motion.div
+            <SafeMotion.div
               key={stream.userId}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -181,7 +181,7 @@ export const AudioMonitoringDashboard = ({ className = "" }: AudioMonitoringDash
               <div className="flex items-start gap-3">
                 {/* Status Indicator */}
                 <div className="mt-2">
-                  <motion.div 
+                  <SafeMotion.div 
                     className={`w-3 h-3 rounded-full ${
                       stream.isPlaying && !stream.isMuted 
                         ? 'bg-green-500' 
@@ -221,9 +221,9 @@ export const AudioMonitoringDashboard = ({ className = "" }: AudioMonitoringDash
                   <div>Active {getTimeAgo(stream.lastActivity)}</div>
                 </div>
               </div>
-            </motion.div>
+            </SafeMotion.div>
           ))}
-        </AnimatePresence>
+        </SafeMotion.AnimatePresence>
         
         {audioStreams.length === 0 && (
           <div className="text-center text-gray-500 py-8">

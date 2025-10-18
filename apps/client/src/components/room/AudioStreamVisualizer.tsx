@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { Mic, Monitor, Music, Volume2, VolumeX } from "lucide-react";
 
 interface AudioVisualizerProps {
@@ -226,7 +226,7 @@ export const AudioStreamVisualizer = ({
           
           {/* Level Meter */}
           <div className="w-12 sm:w-16 h-2 bg-gray-700 rounded-full overflow-hidden">
-            <motion.div
+            <SafeMotion.div
               className="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500"
               style={{ width: `${(audioLevel * 100)}%` }}
               animate={{ 

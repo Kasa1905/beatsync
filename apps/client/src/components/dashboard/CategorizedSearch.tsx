@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { useGlobalStore, useCanMutate } from "@/store/global";
 import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum } from "@beatsync/shared";
@@ -99,14 +99,14 @@ export function CategorizedSearch({ className, onTrackSelect }: CategorizedSearc
   if (isSearching) {
     return (
       <div className={cn("p-8 text-center", className)}>
-        <motion.div
+        <SafeMotion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex flex-col items-center gap-3"
         >
           <div className="size-6 animate-spin rounded-full border-2 border-neutral-600 border-t-green-500" />
           <p className="text-neutral-400 text-sm">Searching...</p>
-        </motion.div>
+        </SafeMotion.div>
       </div>
     );
   }
@@ -129,7 +129,7 @@ export function CategorizedSearch({ className, onTrackSelect }: CategorizedSearc
         <div className="space-y-2">
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {trackResults.map((track: any, index: number) => (
-            <motion.div
+            <SafeMotion.div
               key={track.id || track.url || index}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -163,7 +163,7 @@ export function CategorizedSearch({ className, onTrackSelect }: CategorizedSearc
                   <Play className="size-4" />
                 </Button>
               )}
-            </motion.div>
+            </SafeMotion.div>
           ))}
         </div>
       ) : (

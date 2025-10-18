@@ -1,5 +1,5 @@
 import { useGlobalStore } from "@/store/global";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { useEffect, useRef, useState } from "react";
 
 export const SpatialGainMeter = () => {
@@ -67,7 +67,7 @@ export const SpatialGainMeter = () => {
 
       {/* Visual gain meter */}
       <div className="relative h-3 w-full bg-neutral-800/60 rounded-full overflow-hidden flex items-center px-0.5">
-        <motion.div
+        <SafeMotion.div
           className="absolute h-1.5 rounded-full"
           initial={{ width: 0 }}
           animate={{

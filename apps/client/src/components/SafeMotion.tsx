@@ -1,33 +1,32 @@
 "use client";
-import { motion, AnimatePresence } from "motion/react";
-import { useEffect, useState } from "react";
+import { motion as MotionComponent, AnimatePresence as MotionAnimatePresence, type HTMLMotionProps } from "motion/react";
+import type { FC, ReactNode } from "react";
 
-// Temporarily disable motion for debugging
-export const SafeMotion = {
-  div: ({ children, ...props }: any) => {
-    // Remove motion props and just return a div for now
-    const { initial, animate, exit, transition, whileHover, whileTap, ...restProps } = props;
-    return <div {...restProps}>{children}</div>;
-  },
-  
-  h2: ({ children, ...props }: any) => {
-    const { initial, animate, exit, transition, whileHover, whileTap, ...restProps } = props;
-    return <h2 {...restProps}>{children}</h2>;
-  },
-  
-  p: ({ children, ...props }: any) => {
-    const { initial, animate, exit, transition, whileHover, whileTap, ...restProps } = props;
-    return <p {...restProps}>{children}</p>;
-  },
-  
-  span: ({ children, ...props }: any) => {
-    const { initial, animate, exit, transition, whileHover, whileTap, ...restProps } = props;
-    return <span {...restProps}>{children}</span>;
-  },
-  
-  AnimatePresence: ({ children, ...props }: any) => {
-    return <>{children}</>;
-  }
+interface AnimatePresenceProps {
+  children: ReactNode;
+}
+
+// Create optimized motion components with proper typing
+const createMotionComponent = <T extends keyof JSX.IntrinsicElements>(
+  Component: T
+): FC<HTMLMotionProps<T>> => {
+  const MotionComponent: FC<HTMLMotionProps<T>> = ({ children, ...props }) => {
+    return <Component {...props}>{children}</Component>;
+  };
+  MotionComponent.displayName = `SafeMotion.${Component}`;
+  return MotionComponent;
 };
 
-export { motion, AnimatePresence };
+// Optimized SafeMotion components with proper typing
+export const SafeMotion = {
+  div: createMotionComponent('div'),
+  h2: createMotionComponent('h2'),
+  p: createMotionComponent('p'),
+  span: createMotionComponent('span'),
+  circle: MotionComponent.circle,  // Add SVG circle support
+  AnimatePresence: MotionAnimatePresence  // Use the original AnimatePresence
+};
+
+// Export optimized motion components
+export { MotionComponent as motion };
+export { MotionAnimatePresence as AnimatePresence };

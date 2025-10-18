@@ -7,7 +7,8 @@ import { useGlobalStore } from "@/store/global";
 import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum, TrackType } from "@beatsync/shared";
 import { Plus } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
+import { motion } from "motion/react";
 import Image from "next/image";
 import { usePostHog } from "../PostHogProvider";
 import { toast } from "sonner";
@@ -115,7 +116,7 @@ export function SearchResults({
 
   if (isSearching) {
     return (
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex flex-col items-center justify-center py-8"
@@ -160,53 +161,53 @@ export function SearchResults({
           </svg>
         </div>
 
-        <motion.h3
+                <SafeMotion.div
           className="text-base font-medium tracking-tight mb-1 text-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
+          transition={{ duration: 0.2 }}
         >
-          Searching for music...
-        </motion.h3>
+          Search Results
+        </SafeMotion.div>
 
-        <motion.p
+        <SafeMotion.p
           className="text-neutral-400 text-center text-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.15 }}
         >
           Finding tracks that match your query
-        </motion.p>
-      </motion.div>
+        </SafeMotion.p>
+      </SafeMotion.div>
     );
   }
 
   // Handle error state
   if (searchResults && searchResults.type === "error") {
     return (
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex flex-col items-center justify-center py-8"
       >
-        <motion.h3
+        <SafeMotion.div
           className="text-base font-medium tracking-tight mb-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
           💀
-        </motion.h3>
+        </SafeMotion.div>
 
-        <motion.p
+        <SafeMotion.p
           className="text-neutral-400 text-center text-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.15 }}
         >
           {searchResults.message}
-        </motion.p>
-      </motion.div>
+        </SafeMotion.p>
+      </SafeMotion.div>
     );
   }
 
@@ -232,7 +233,7 @@ export function SearchResults({
   ) {
     if (searchQuery) {
       return (
-        <motion.div
+        <SafeMotion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex flex-col items-center justify-center py-8"
@@ -270,65 +271,63 @@ export function SearchResults({
             </svg>
           </div>
 
-          <motion.h3
-            className="text-base font-medium tracking-tight mb-1 text-white"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
-            No results found
-          </motion.h3>
-
-          <motion.p
+        <SafeMotion.div
+          className="text-base font-medium tracking-tight mb-1 text-white"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          No results found
+        </SafeMotion.div>          <SafeMotion.p
             className="text-neutral-400 text-center text-xs"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.15 }}
           >
             Try searching for a different artist, song, or album
-          </motion.p>
-        </motion.div>
+          </SafeMotion.p>
+        </SafeMotion.div>
       );
     }
 
     // Show initial state when no search has been performed
     return (
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex flex-col items-center justify-center py-8"
       >
-        <motion.h3
+        <SafeMotion.div
           className="text-base font-medium tracking-tight mb-1 text-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
           Start typing to search for music...
-        </motion.h3>
+        </SafeMotion.div>
 
-        <motion.p
+        <SafeMotion.p
           className="text-neutral-400 text-center text-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.15 }}
         >
           Experimental. Free while in beta.
-        </motion.p>
-      </motion.div>
+        </SafeMotion.p>
+      </SafeMotion.div>
     );
   }
 
   return (
-    <motion.div
+    <SafeMotion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className={cn(isMobile && "max-h-[40vh]", className)}
     >
-      <AnimatePresence>
+      <SafeMotion.AnimatePresence>
         <div className="space-y-1">
           {tracksArray.map((track, index) => (
-            <motion.div
+            <SafeMotion.div
               key={track.id || `${track.name}-${index}`}
               initial={{
                 opacity: 0,
@@ -397,14 +396,14 @@ export function SearchResults({
               >
                 <Plus className="h-3 w-3" />
               </Button>
-            </motion.div>
+            </SafeMotion.div>
           ))}
         </div>
-      </AnimatePresence>
+      </SafeMotion.AnimatePresence>
 
       {/* Load More (if there are more results) */}
       {hasMoreResults && (
-        <motion.div
+        <SafeMotion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
@@ -433,7 +432,7 @@ export function SearchResults({
               <div className="flex items-center justify-center gap-2">
                 <div className="size-3 relative flex items-center justify-center">
                   <svg className="w-full h-full" viewBox="0 0 100 100">
-                    <motion.circle
+                    <SafeMotion.circle
                       cx="50"
                       cy="50"
                       r="35"
@@ -463,8 +462,8 @@ export function SearchResults({
               "Show more results"
             )}
           </Button>
-        </motion.div>
+        </SafeMotion.div>
       )}
-    </motion.div>
+    </SafeMotion.div>
   );
 }

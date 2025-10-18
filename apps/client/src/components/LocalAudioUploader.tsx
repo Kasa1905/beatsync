@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload, FileAudio, X } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 
 interface LocalAudioUploaderProps {
   onFileSelect?: (file: File, url: string) => void;
@@ -83,12 +83,12 @@ export const LocalAudioUploader = ({ onFileSelect, className = "" }: LocalAudioU
       >
         {!selectedFile ? (
           <div className="text-center">
-            <motion.div
+            <SafeMotion.div
               animate={{ y: isDragOver ? -5 : 0 }}
               transition={{ duration: 0.2 }}
             >
               <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            </motion.div>
+            </SafeMotion.div>
             
             <h3 className="text-lg font-medium text-white mb-2">
               Upload Audio File
@@ -110,7 +110,7 @@ export const LocalAudioUploader = ({ onFileSelect, className = "" }: LocalAudioU
             </p>
           </div>
         ) : (
-          <motion.div
+          <SafeMotion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
@@ -152,7 +152,7 @@ export const LocalAudioUploader = ({ onFileSelect, className = "" }: LocalAudioU
             <div className="text-xs text-green-400">
               ✅ File ready for local playback
             </div>
-          </motion.div>
+          </SafeMotion.div>
         )}
       </div>
       

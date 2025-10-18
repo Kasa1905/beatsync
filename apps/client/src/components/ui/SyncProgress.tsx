@@ -1,7 +1,7 @@
 "use client";
 
 import { MAX_NTP_MEASUREMENTS, useGlobalStore } from "@/store/global";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { useEffect, useState } from "react";
 
 interface SyncProgressProps {
@@ -15,14 +15,14 @@ interface SyncProgressProps {
 
 const OuterModal = ({ children }: { children: React.ReactNode }) => {
   return (
-    <motion.div
+    <SafeMotion.div
       className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-neutral-950 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       <div className="w-full max-w-md px-1">{children}</div>
-    </motion.div>
+    </SafeMotion.div>
   );
 };
 
@@ -89,13 +89,13 @@ export const SyncProgress = ({
   if (hasReconnectionFailed) {
     return (
       <OuterModal>
-        <motion.div
+        <SafeMotion.div
           className="flex flex-col items-center justify-center p-6 bg-neutral-900 rounded-md border border-neutral-800 shadow-lg"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <motion.div
+          <SafeMotion.div
             className="size-6 flex items-center justify-center mb-2"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -109,7 +109,7 @@ export const SyncProgress = ({
               xmlns="http://www.w3.org/2000/svg"
               className="text-white"
             >
-              <motion.path
+              <SafeMotion.path
                 d="M6 6L18 18M18 6L6 18"
                 stroke="currentColor"
                 strokeWidth="1.5"
@@ -119,18 +119,18 @@ export const SyncProgress = ({
                 transition={{ duration: 0.3, delay: 0.2 }}
               />
             </svg>
-          </motion.div>
+          </SafeMotion.div>
 
-          <motion.h2
+          <SafeMotion.h2
             className="text-base font-medium tracking-tight mb-1 text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.2 }}
           >
             Failed to reconnect
-          </motion.h2>
+          </SafeMotion.h2>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-400 mb-5 text-center text-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -138,9 +138,9 @@ export const SyncProgress = ({
           >
             Unable to establish connection after {reconnectionInfo.maxAttempts}{" "}
             attempts
-          </motion.p>
+          </SafeMotion.p>
 
-          <motion.a
+          <SafeMotion.a
             href="/"
             className="mt-4 px-5 py-2 bg-primary text-primary-foreground rounded-full font-medium text-xs tracking-wide cursor-pointer w-full hover:shadow-lg hover:shadow-zinc-50/50 transition-shadow duration-500 text-center"
             initial={{ opacity: 0 }}
@@ -152,17 +152,17 @@ export const SyncProgress = ({
             transition={{ duration: 0.3 }}
           >
             Go to home
-          </motion.a>
+          </SafeMotion.a>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-500 mt-4.5 text-center text-xs"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.3 }}
           >
             Please check your connection and try again
-          </motion.p>
-        </motion.div>
+          </SafeMotion.p>
+        </SafeMotion.div>
       </OuterModal>
     );
   }
@@ -171,13 +171,13 @@ export const SyncProgress = ({
   if (reconnectionInfo.isReconnecting) {
     return (
       <OuterModal>
-        <motion.div
+        <SafeMotion.div
           className="flex flex-col items-center justify-center p-6 bg-neutral-900 rounded-md border border-neutral-800 shadow-lg"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <motion.div
+          <SafeMotion.div
             className="size-12 flex items-center justify-center mb-2"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -191,7 +191,7 @@ export const SyncProgress = ({
               xmlns="http://www.w3.org/2000/svg"
               className="text-primary"
             >
-              <motion.circle
+              <SafeMotion.circle
                 cx="6"
                 cy="12"
                 r="2"
@@ -199,7 +199,7 @@ export const SyncProgress = ({
                 animate={{ opacity: [0.3, 1, 0.3] }}
                 transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
               />
-              <motion.circle
+              <SafeMotion.circle
                 cx="12"
                 cy="12"
                 r="2"
@@ -207,7 +207,7 @@ export const SyncProgress = ({
                 animate={{ opacity: [0.3, 1, 0.3] }}
                 transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
               />
-              <motion.circle
+              <SafeMotion.circle
                 cx="18"
                 cy="12"
                 r="2"
@@ -216,18 +216,18 @@ export const SyncProgress = ({
                 transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
               />
             </svg>
-          </motion.div>
+          </SafeMotion.div>
 
-          <motion.h2
+          <SafeMotion.h2
             className="text-base font-medium tracking-tight mb-1 text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.2 }}
           >
             {"Reconnecting..."}
-          </motion.h2>
+          </SafeMotion.h2>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-400 mb-5 text-center text-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -235,17 +235,17 @@ export const SyncProgress = ({
           >
             Attempt {reconnectionInfo.currentAttempt} of{" "}
             {reconnectionInfo.maxAttempts}
-          </motion.p>
+          </SafeMotion.p>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-500 mt-4.5 text-center text-xs"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.3 }}
           >
             You might have a spotty connection or a new deployment is in progress. If this issue persists, please check your network connection.
-          </motion.p>
-        </motion.div>
+          </SafeMotion.p>
+        </SafeMotion.div>
       </OuterModal>
     );
   }
@@ -258,13 +258,13 @@ export const SyncProgress = ({
 
     return (
       <OuterModal>
-        <motion.div
+        <SafeMotion.div
           className="flex flex-col items-center justify-center p-6 bg-neutral-900 rounded-md border border-neutral-800 shadow-lg"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <motion.div
+          <SafeMotion.div
             className="w-12 h-12 flex items-center justify-center mb-3"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -278,7 +278,7 @@ export const SyncProgress = ({
               xmlns="http://www.w3.org/2000/svg"
               className="text-primary"
             >
-              <motion.path
+              <SafeMotion.path
                 d="M20 6L9 17L4 12"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -289,27 +289,27 @@ export const SyncProgress = ({
                 transition={{ duration: 0.4, delay: 0.2 }}
               />
             </svg>
-          </motion.div>
+          </SafeMotion.div>
 
-          <motion.h2
+          <SafeMotion.h2
             className="text-base font-medium tracking-tight mb-1 text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.2 }}
           >
             Synchronization Complete
-          </motion.h2>
+          </SafeMotion.h2>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-400 mb-5 text-center text-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.25 }}
           >
             Your device is now synchronized with this room.
-          </motion.p>
+          </SafeMotion.p>
 
-          <motion.button
+          <SafeMotion.button
             className="mt-4 px-5 py-2 bg-primary text-primary-foreground rounded-full font-medium text-xs tracking-wide cursor-pointer w-full hover:shadow-lg hover:shadow-zinc-50/50 transition-shadow duration-500"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -321,24 +321,24 @@ export const SyncProgress = ({
             onClick={() => setIsInitingSystem(false)}
           >
             Start System
-          </motion.button>
+          </SafeMotion.button>
 
-          <motion.p
+          <SafeMotion.p
             className="text-neutral-500 mt-4.5 text-center text-xs"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.3 }}
           >
             Use native device speakers.
-          </motion.p>
-        </motion.div>
+          </SafeMotion.p>
+        </SafeMotion.div>
       </OuterModal>
     );
   }
 
   return (
     <OuterModal>
-      <motion.div
+      <SafeMotion.div
         className="flex flex-col items-center justify-center p-6 bg-neutral-900 rounded-md border border-neutral-800 shadow-lg"
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
@@ -358,7 +358,7 @@ export const SyncProgress = ({
             />
 
             {/* Progress circle */}
-            <motion.circle
+            <SafeMotion.circle
               cx="50"
               cy="50"
               r="42"
@@ -384,7 +384,7 @@ export const SyncProgress = ({
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
+            <SafeMotion.div
               className="text-xs font-medium text-white"
               key={Math.round(normalizedProgress * 100)}
               initial={{ opacity: 0.8 }}
@@ -392,38 +392,38 @@ export const SyncProgress = ({
               transition={{ duration: 0.2 }}
             >
               {`${Math.round(normalizedProgress * 100)}%`}
-            </motion.div>
+            </SafeMotion.div>
           </div>
         </div>
 
-        <motion.h2
+        <SafeMotion.h2
           className="text-base font-medium tracking-tight mb-1 text-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
           Beatsync calibrating
-        </motion.h2>
+        </SafeMotion.h2>
 
-        <motion.p
+        <SafeMotion.p
           className="text-neutral-400 mb-5 text-center text-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.15 }}
         >
           {message}
-        </motion.p>
+        </SafeMotion.p>
 
         {/* Progress bar */}
         <div className="w-full h-[4px] bg-neutral-800 rounded-full overflow-hidden mt-4 mb-2">
-          <motion.div
+          <SafeMotion.div
             className="h-full bg-neutral-300"
             initial={{ width: "0%" }}
             animate={{ width: `${normalizedProgress * 100}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           />
         </div>
-      </motion.div>
+      </SafeMotion.div>
     </OuterModal>
   );
 };

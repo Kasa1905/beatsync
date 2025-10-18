@@ -1,7 +1,7 @@
 "use client";
 import { useClientId } from "@/hooks/useClientId";
 import { useGlobalStore } from "@/store/global";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 
 export const SpatialAudioBackground = () => {
   const { clientId } = useClientId();
@@ -17,13 +17,13 @@ export const SpatialAudioBackground = () => {
 
   return (
     <>
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: gain }}
         transition={{ duration: 1.5 }}
         className="fixed inset-0 pointer-events-none -z-10 bg-gradient-to-br from-blue-600/50 via-pink-500/30 to-blue-400/25 blur-lg"
       />
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: gain }}
         transition={{ duration: 1.2 }}
@@ -31,7 +31,7 @@ export const SpatialAudioBackground = () => {
       />
 
       {/* Additional color spots */}
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{
           opacity: [gain * 0.6, gain, gain * 0.6],
@@ -45,7 +45,7 @@ export const SpatialAudioBackground = () => {
         className="fixed top-[10%] left-[15%] w-[30vw] h-[30vw] rounded-full bg-pink-600/20 blur-3xl pointer-events-none -z-10"
       />
 
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{
           opacity: [gain * 0.5, gain * 0.9, gain * 0.5],
@@ -60,7 +60,7 @@ export const SpatialAudioBackground = () => {
         className="fixed bottom-[20%] right-[10%] w-[25vw] h-[25vw] rounded-full bg-purple-600/20 blur-3xl pointer-events-none -z-10"
       />
 
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{
           opacity: [gain * 0.4, gain * 0.8, gain * 0.4],
@@ -76,7 +76,7 @@ export const SpatialAudioBackground = () => {
       />
 
       {/* New highlight spots for extra pop */}
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{
           opacity: [gain * 0.4, gain * 0.8, gain * 0.4],
@@ -91,7 +91,7 @@ export const SpatialAudioBackground = () => {
         className="fixed top-[30%] left-[30%] w-[15vw] h-[15vw] rounded-full bg-cyan-500/20 blur-2xl pointer-events-none -z-10"
       />
 
-      <motion.div
+      <SafeMotion.div
         initial={{ opacity: 0 }}
         animate={{
           opacity: [gain * 0.3, gain * 0.7, gain * 0.3],

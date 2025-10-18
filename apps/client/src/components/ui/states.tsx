@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Loader2, RefreshCw } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { Button } from "../ui/button";
 
 interface LoadingSpinnerProps {
@@ -22,7 +22,7 @@ export const LoadingSpinner = ({
   };
 
   return (
-    <motion.div 
+    <SafeMotion.div 
       className={`flex flex-col items-center justify-center gap-3 ${className}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -30,16 +30,16 @@ export const LoadingSpinner = ({
     >
       <Loader2 className={`${sizeClasses[size]} animate-spin text-primary`} />
       {text && (
-        <motion.p 
+        <SafeMotion.p 
           className="text-sm text-muted-foreground"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
           {text}
-        </motion.p>
+        </SafeMotion.p>
       )}
-    </motion.div>
+    </SafeMotion.div>
   );
 };
 
@@ -55,7 +55,7 @@ export const LoadingState = ({
   children 
 }: LoadingStateProps) => {
   return (
-    <motion.div 
+    <SafeMotion.div 
       className="flex flex-col items-center justify-center min-h-[200px] p-8 text-center"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -63,7 +63,7 @@ export const LoadingState = ({
     >
       <LoadingSpinner size="lg" />
       
-      <motion.div 
+      <SafeMotion.div 
         className="mt-6 space-y-2"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -75,19 +75,19 @@ export const LoadingState = ({
             {description}
           </p>
         )}
-      </motion.div>
+      </SafeMotion.div>
 
       {children && (
-        <motion.div 
+        <SafeMotion.div 
           className="mt-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
           {children}
-        </motion.div>
+        </SafeMotion.div>
       )}
-    </motion.div>
+    </SafeMotion.div>
   );
 };
 
@@ -107,22 +107,22 @@ export const ErrorState = ({
   children 
 }: ErrorStateProps) => {
   return (
-    <motion.div 
+    <SafeMotion.div 
       className="flex flex-col items-center justify-center min-h-[200px] p-8 text-center"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <motion.div 
+      <SafeMotion.div 
         className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center mb-4"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
       >
         <AlertTriangle className="w-6 h-6 text-destructive" />
-      </motion.div>
+      </SafeMotion.div>
       
-      <motion.div 
+      <SafeMotion.div 
         className="space-y-2"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -132,10 +132,10 @@ export const ErrorState = ({
         <p className="text-sm text-muted-foreground max-w-md">
           {description}
         </p>
-      </motion.div>
+      </SafeMotion.div>
 
       {onRetry && (
-        <motion.div 
+        <SafeMotion.div 
           className="mt-6"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -149,20 +149,20 @@ export const ErrorState = ({
             <RefreshCw className="w-4 h-4" />
             {retryText}
           </Button>
-        </motion.div>
+        </SafeMotion.div>
       )}
 
       {children && (
-        <motion.div 
+        <SafeMotion.div 
           className="mt-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
           {children}
-        </motion.div>
+        </SafeMotion.div>
       )}
-    </motion.div>
+    </SafeMotion.div>
   );
 };
 
@@ -185,24 +185,24 @@ export const EmptyState = ({
   children 
 }: EmptyStateProps) => {
   return (
-    <motion.div 
+    <SafeMotion.div 
       className="flex flex-col items-center justify-center min-h-[200px] p-8 text-center"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
     >
       {icon && (
-        <motion.div 
+        <SafeMotion.div 
           className="mb-4 text-muted-foreground"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
         >
           {icon}
-        </motion.div>
+        </SafeMotion.div>
       )}
       
-      <motion.div 
+      <SafeMotion.div 
         className="space-y-2"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -212,10 +212,10 @@ export const EmptyState = ({
         <p className="text-sm text-muted-foreground max-w-md">
           {description}
         </p>
-      </motion.div>
+      </SafeMotion.div>
 
       {action && (
-        <motion.div 
+        <SafeMotion.div 
           className="mt-6"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -224,19 +224,19 @@ export const EmptyState = ({
           <Button onClick={action.onClick}>
             {action.label}
           </Button>
-        </motion.div>
+        </SafeMotion.div>
       )}
 
       {children && (
-        <motion.div 
+        <SafeMotion.div 
           className="mt-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
           {children}
-        </motion.div>
+        </SafeMotion.div>
       )}
-    </motion.div>
+    </SafeMotion.div>
   );
 };

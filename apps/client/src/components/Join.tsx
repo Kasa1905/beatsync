@@ -12,7 +12,7 @@ import { validateFullRoomId, validatePartialRoomId } from "@/lib/room";
 import { useRoomStore } from "@/store/room";
 import { useQuery } from "@tanstack/react-query";
 import { LogIn, PlusCircle } from "lucide-react";
-import { SafeMotion } from "./SafeMotion";
+import { SafeMotion } from "@components/SafeMotion";
 import { useRouter } from "next/navigation";
 import { usePostHog } from "./PostHogProvider";
 import { useEffect, useState } from "react";
@@ -250,7 +250,7 @@ export const Join = () => {
             >
               <div className="text-sm text-neutral-400">
                 You&apos;ll join as{" "}
-                <SafeMotion.AnimatePresence mode="wait" initial={false}>
+                <SafeMotion.SafeMotion.AnimatePresence mode="wait" initial={false}>
                   <SafeMotion.span
                     key={username}
                     className="text-primary font-medium inline-block"
@@ -272,7 +272,7 @@ export const Join = () => {
                   >
                     {username}
                   </SafeMotion.span>
-                </SafeMotion.AnimatePresence>
+                </SafeMotion.SafeMotion.AnimatePresence>
               </div>
               <Button
                 type="button"

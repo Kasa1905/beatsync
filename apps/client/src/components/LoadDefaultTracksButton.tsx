@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/global";
 import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum } from "@beatsync/shared";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { useEffect, useRef, useState } from "react";
 
 interface LoadDefaultTracksButtonProps {
@@ -51,7 +51,7 @@ export const LoadDefaultTracksButton = ({
   };
 
   return (
-    <motion.button
+    <SafeMotion.button
       className={cn(
         "relative inline-flex items-center justify-center px-5 py-2 bg-primary text-primary-foreground rounded-full",
         "font-medium text-xs tracking-wide cursor-pointer",
@@ -69,7 +69,7 @@ export const LoadDefaultTracksButton = ({
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-4 h-4">
             <svg className="w-full h-full" viewBox="0 0 100 100">
-              <motion.circle
+              <SafeMotion.circle
                 cx="50"
                 cy="50"
                 r="35"
@@ -90,7 +90,7 @@ export const LoadDefaultTracksButton = ({
       <span className={cn(isLoading ? "opacity-0" : "opacity-100")}>
         Load default tracks
       </span>
-    </motion.button>
+    </SafeMotion.button>
   );
 };
 

@@ -3,9 +3,15 @@
 import React, { createContext, useContext } from "react";
 
 // Create a mock PostHog context
-const PostHogContext = createContext({
-  capture: (event: string, properties?: Record<string, any>) => {},
-  identify: (userId: string, properties?: Record<string, any>) => {},
+interface PostHogContextType {
+  capture: (event: string, properties?: Record<string, unknown>) => void;
+  identify: (userId: string, properties?: Record<string, unknown>) => void;
+  reset: () => void;
+}
+
+const PostHogContext = createContext<PostHogContextType>({
+  capture: () => {},
+  identify: () => {},
   reset: () => {},
 });
 
@@ -16,11 +22,11 @@ export function usePostHog() {
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   // Mock PostHog instance
-  const mockPostHog = {
-    capture: (event: string, properties?: Record<string, any>) => {
+  const mockPostHog: PostHogContextType = {
+    capture: (event: string, properties?: Record<string, unknown>) => {
       console.log('📊 [Mock Analytics]', event, properties);
     },
-    identify: (userId: string, properties?: Record<string, any>) => {
+    identify: (userId: string, properties?: Record<string, unknown>) => {
       console.log('👤 [Mock Analytics] Identify:', userId, properties);
     },
     reset: () => {

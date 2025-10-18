@@ -15,7 +15,7 @@ import {
   WifiOff,
   Upload
 } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { UniversalAudioUploader } from "./UniversalAudioUploader";
@@ -412,7 +412,7 @@ export const SystemAudioStreamer = ({ className }: SystemAudioStreamerProps) => 
           <span className="text-xs text-gray-400">{(audioLevel * 100).toFixed(0)}%</span>
         </div>
         <div className="w-full bg-neutral-700 rounded-full h-2">
-          <motion.div
+          <SafeMotion.div
             className="h-2 rounded-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500"
             initial={{ width: 0 }}
             animate={{ width: `${audioLevel * 100}%` }}
@@ -426,7 +426,7 @@ export const SystemAudioStreamer = ({ className }: SystemAudioStreamerProps) => 
   // Control button
   const ControlButton = () => (
     streamType !== 'file' ? (
-      <motion.button
+      <SafeMotion.button
         onClick={isStreaming ? stopStreaming : startStreaming}
         className={cn(
           "w-full p-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2",
@@ -448,7 +448,7 @@ export const SystemAudioStreamer = ({ className }: SystemAudioStreamerProps) => 
             Start {streamType === 'system' ? 'System Audio' : 'Microphone'} Streaming
           </>
         )}
-      </motion.button>
+      </SafeMotion.button>
     ) : null
   );
 

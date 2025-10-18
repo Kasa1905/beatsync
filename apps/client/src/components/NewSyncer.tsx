@@ -1,7 +1,7 @@
 "use client";
 import { generateName } from "@/lib/randomNames";
 import { useRoomStore } from "@/store/room";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { useEffect } from "react";
 import { Dashboard } from "./dashboard/Dashboard";
 import { WebSocketManager } from "./room/WebSocketManager";
@@ -25,7 +25,7 @@ export const NewSyncer = ({ roomId }: NewSyncerProps) => {
   }, [setUsername, username, roomId, setRoomId]);
 
   return (
-    <motion.div
+    <SafeMotion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -37,6 +37,6 @@ export const NewSyncer = ({ roomId }: NewSyncerProps) => {
       {/* <SpatialAudioBackground /> */}
 
       <Dashboard roomId={roomId} />
-    </motion.div>
+    </SafeMotion.div>
   );
 };

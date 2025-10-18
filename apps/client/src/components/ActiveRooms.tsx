@@ -7,7 +7,7 @@ import { cn, extractFileNameFromUrl, getOldestClient } from "@/lib/utils";
 import { useRoomStore } from "@/store/room";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Music, Users2 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { usePostHog } from "./PostHogProvider";
@@ -44,7 +44,7 @@ export const ActiveRooms = () => {
   // Show loading state
   if (isLoading) {
     return (
-      <motion.div
+      <SafeMotion.div
         className="mt-12 w-full max-w-[32rem] mb-32"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -53,14 +53,14 @@ export const ActiveRooms = () => {
         <div className="text-center">
           <LoadingSpinner text="Discovering active rooms..." />
         </div>
-      </motion.div>
+      </SafeMotion.div>
     );
   }
 
   // Show error state
   if (error) {
     return (
-      <motion.div
+      <SafeMotion.div
         className="mt-12 w-full max-w-[32rem] mb-32"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -71,14 +71,14 @@ export const ActiveRooms = () => {
           description="We couldn't load active rooms. Please check your connection and try again."
           onRetry={() => refetch()}
         />
-      </motion.div>
+      </SafeMotion.div>
     );
   }
 
   // Show empty state
   if (!discoverRooms || discoverRooms.length === 0) {
     return (
-      <motion.div
+      <SafeMotion.div
         className="mt-12 w-full max-w-[32rem] mb-32"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -89,12 +89,12 @@ export const ActiveRooms = () => {
           title="No active rooms"
           description="No public rooms are currently playing music. Create a room to get started!"
         />
-      </motion.div>
+      </SafeMotion.div>
     );
   }
 
   return (
-    <motion.div
+    <SafeMotion.div
       className="mt-12 w-full max-w-[32rem] mb-32"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -104,9 +104,9 @@ export const ActiveRooms = () => {
         Playing Now
       </h3>
       <div className="space-y-1">
-        <AnimatePresence initial={true}>
+        <SafeMotion.AnimatePresence>
           {discoverRooms.map((room, index) => (
-            <motion.div
+            <SafeMotion.div
               key={room.roomId}
               layout
               initial={{ opacity: 0, y: 15 }}
@@ -245,10 +245,10 @@ export const ActiveRooms = () => {
                 {/* Arrow */}
                 <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 transition-colors flex-shrink-0" />
               </div>
-            </motion.div>
+            </SafeMotion.div>
           ))}
-        </AnimatePresence>
+        </SafeMotion.AnimatePresence>
       </div>
-    </motion.div>
+    </SafeMotion.div>
   );
 };

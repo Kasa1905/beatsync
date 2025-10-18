@@ -5,7 +5,7 @@ import { useCanMutate, useGlobalStore } from "@/store/global";
 import { sendWSRequest } from "@/utils/ws";
 import { ClientActionEnum } from "@beatsync/shared";
 import { Lock, Unlock } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { usePostHog } from "./PostHogProvider";
 import { useState } from "react";
 
@@ -40,7 +40,7 @@ export const RoomPrivacyToggle = () => {
   }
 
   return (
-    <motion.div
+    <SafeMotion.div
       className="px-4 py-3"
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export const RoomPrivacyToggle = () => {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <motion.div
+          <SafeMotion.div
             animate={{ 
               scale: isPrivate ? 1.1 : 1,
               color: isPrivate ? "#ef4444" : "#6b7280"
@@ -60,7 +60,7 @@ export const RoomPrivacyToggle = () => {
             ) : (
               <Unlock className="h-4 w-4" />
             )}
-          </motion.div>
+          </SafeMotion.div>
           <div>
             <div className="text-sm font-medium text-white">
               {isPrivate ? "Private Room" : "Public Room"}
@@ -80,6 +80,6 @@ export const RoomPrivacyToggle = () => {
           className="data-[state=checked]:bg-red-600"
         />
       </div>
-    </motion.div>
+    </SafeMotion.div>
   );
 };

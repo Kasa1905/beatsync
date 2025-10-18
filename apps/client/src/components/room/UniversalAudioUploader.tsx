@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { cn } from "@/lib/utils";
 import { Upload, File, Play, Pause, Volume2 } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { toast } from "sonner";
 
 interface UniversalAudioUploaderProps {
@@ -227,7 +227,7 @@ export const UniversalAudioUploader: React.FC<UniversalAudioUploaderProps> = ({
                 className="h-2 bg-neutral-700 rounded-full cursor-pointer"
                 onClick={handleSeek}
               >
-                <motion.div
+                <SafeMotion.div
                   className="h-2 bg-primary-500 rounded-full"
                   style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
                 />
@@ -237,14 +237,14 @@ export const UniversalAudioUploader: React.FC<UniversalAudioUploaderProps> = ({
             <Volume2 className="h-4 w-4 text-neutral-400" />
           </div>
           
-          <motion.button
+          <SafeMotion.button
             onClick={() => audioFile && processAudioFile(audioFile)}
             className="w-full p-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium transition-colors"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             Stream Audio to Room
-          </motion.button>
+          </SafeMotion.button>
         </div>
       )}
       

@@ -3,8 +3,8 @@
 import { cn } from "@/lib/utils";
 import { useRoomStore } from "@/store/room";
 import { Hash } from "lucide-react";
-import { motion } from "motion/react";
-import { AudioUploaderMinimal } from "../AudioUploaderMinimal";
+import { SafeMotion } from "@components/SafeMotion";
+import { MultiAudioUploader } from "../MultiAudioUploader";
 import { RoomQRCode } from "../RoomQRCode";
 import { RoomPrivacyToggle } from "../RoomPrivacyToggle";
 import { SystemAudioStreaming } from "../SystemAudioStreaming";
@@ -33,7 +33,7 @@ export const Left = ({ className }: LeftProps) => {
   const roomId = useRoomStore((state) => state.roomId);
 
   return (
-    <motion.div
+    <SafeMotion.div
       className={cn(
         "w-full lg:w-80 lg:flex-shrink-0 border-l border-neutral-800/50 bg-neutral-900/50 backdrop-blur-md flex flex-col pb-4 lg:pb-0 text-sm space-y-1 overflow-y-auto flex-shrink-0 scrollbar-thin scrollbar-thumb-rounded-md scrollbar-thumb-muted-foreground/10 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/20",
         className
@@ -51,7 +51,7 @@ export const Left = ({ className }: LeftProps) => {
       <Separator className="bg-neutral-800/50" /> */}
 
       {/* Navigation menu */}
-      <motion.div className="px-3.5 space-y-2.5 py-2 mt-1">
+      <SafeMotion.div className="px-3.5 space-y-2.5 py-2 mt-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 font-medium">
             <Hash size={18} />
@@ -61,7 +61,7 @@ export const Left = ({ className }: LeftProps) => {
           {/* QR Code Dialog */}
           <RoomQRCode />
         </div>
-      </motion.div>
+      </SafeMotion.div>
 
       <Separator className="bg-neutral-800/50" />
 
@@ -92,7 +92,7 @@ export const Left = ({ className }: LeftProps) => {
       {/* <Separator className="bg-neutral-800/50" /> */}
 
       {/* Tips Section */}
-      <motion.div className="mt-auto pb-4 pt-2 text-neutral-400">
+      <SafeMotion.div className="mt-auto pb-4 pt-2 text-neutral-400">
         <div className="flex flex-col gap-2 p-4 border-t border-neutral-800/50">
           <h5 className="text-xs font-medium text-neutral-300">Tips</h5>
           <ul className="list-disc list-outside pl-4 space-y-1.5">
@@ -106,9 +106,9 @@ export const Left = ({ className }: LeftProps) => {
         </div>
 
         <div className="pl-1">
-          <AudioUploaderMinimal />
+          <MultiAudioUploader />
         </div>
-      </motion.div>
-    </motion.div>
+      </SafeMotion.div>
+    </SafeMotion.div>
   );
 };

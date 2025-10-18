@@ -5,7 +5,7 @@ import { useChatStore } from "@/store/chat";
 import { useGlobalStore } from "@/store/global";
 import { formatChatTimestamp } from "@/utils/time";
 import { MessageCircle } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { SafeMotion } from "../../SafeMotion";
 import { useEffect, useRef, useState } from "react";
 
 // Constants
@@ -99,9 +99,9 @@ export const Chat = () => {
         className="absolute inset-0 pb-18 px-2 pt-3 h-full overflow-y-auto"
       >
         {/* Empty state */}
-        <AnimatePresence>
+        <SafeMotion.AnimatePresence>
           {messages.length === 0 && (
-            <motion.div
+            <SafeMotion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -116,9 +116,9 @@ export const Chat = () => {
                 No messages yet
               </h3>
               <p className="text-neutral-600 text-xs">Start the conversation</p>
-            </motion.div>
+            </SafeMotion.div>
           )}
-        </AnimatePresence>
+        </SafeMotion.AnimatePresence>
 
         {/* Messages */}
         <div className="space-y-2">
@@ -173,14 +173,14 @@ export const Chat = () => {
                       isOwnMessage ? "items-end" : "items-start"
                     )}
                   >
-                    <AnimatePresence mode="popLayout">
+                    <SafeMotion.AnimatePresence>
                       {group.map((msg, msgIndex) => {
                         const isFirst = msgIndex === 0;
                         const isLast = msgIndex === group.length - 1;
                         const isSingle = group.length === 1;
 
                         return (
-                          <motion.div
+                          <SafeMotion.div
                             key={msg.id}
                             className={cn(
                               "px-3 py-1.5 text-sm break-words",
@@ -225,10 +225,10 @@ export const Chat = () => {
                             layout
                           >
                             <p className="whitespace-pre-wrap">{msg.content}</p>
-                          </motion.div>
+                          </SafeMotion.div>
                         );
                       })}
-                    </AnimatePresence>
+                    </SafeMotion.AnimatePresence>
                   </div>
                 </div>
               </div>

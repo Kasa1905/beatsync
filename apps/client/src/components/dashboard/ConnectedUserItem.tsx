@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { ClientType } from "@beatsync/shared";
 import { TooltipPortal } from "@radix-ui/react-tooltip";
 import { Crown, MoreVertical, User } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { memo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
@@ -109,7 +109,7 @@ export const ConnectedUserItem = memo<ConnectedUserItemProps>(
     );
 
     return (
-      <motion.div
+      <SafeMotion.div
         className={cn(
           "flex items-center gap-2 p-1.5 rounded-md transition-all duration-300 text-sm",
           isCurrentUser ? "bg-primary-400/10" : "bg-transparent"
@@ -204,7 +204,7 @@ export const ConnectedUserItem = memo<ConnectedUserItemProps>(
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-      </motion.div>
+      </SafeMotion.div>
     );
   }
 );

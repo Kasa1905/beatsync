@@ -2,7 +2,7 @@
 
 import { useGlobalStore, useCanMutate } from "@/store/global";
 import { Construction, Orbit, Sparkles } from "lucide-react";
-import { motion } from "motion/react";
+import { SafeMotion } from "@components/SafeMotion";
 import { usePostHog } from "../PostHogProvider";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
@@ -29,14 +29,14 @@ export const AudioControls = () => {
   };
 
   return (
-    <motion.div className="px-4 space-y-2 py-3 mt-1">
+    <SafeMotion.div className="px-4 space-y-2 py-3 mt-1">
       <div className="flex items-center gap-2 font-medium">
         <Sparkles size={18} />
         <span>Audio Effects</span>
       </div>
 
       <div className="space-y-2">
-        <motion.div className={cn(
+        <SafeMotion.div className={cn(
           "bg-neutral-800/20 rounded-md p-3 hover:bg-neutral-800/30 transition-colors",
           !canMutate && "opacity-50"
         )}>
@@ -64,7 +64,7 @@ export const AudioControls = () => {
               </Button>
             </div>
           </div>
-        </motion.div>
+        </SafeMotion.div>
         <div className="bg-neutral-800/20 rounded-md p-2.5 hover:bg-neutral-800/30 transition-colors">
           <div className="flex flex-col gap-2">
             <div className="text-xs text-neutral-500 flex items-center gap-1.5">
@@ -74,6 +74,6 @@ export const AudioControls = () => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </SafeMotion.div>
   );
 };
