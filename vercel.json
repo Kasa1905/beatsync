@@ -1,0 +1,5 @@
+{
+  "buildCommand": "bun install && bunx turbo run build --filter='!server'",
+  "installCommand": "bun install",
+  "outputDirectory": "apps/client/.next"
+}
