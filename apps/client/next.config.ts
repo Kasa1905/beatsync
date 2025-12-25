@@ -16,55 +16,12 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: true, // Enable parallel builds
   },
   
+  // Enable Turbopack (Next.js 16 default) with empty config to silence warnings
+  turbopack: {},
+  
   // Compression and optimization
   compress: true,
   poweredByHeader: false,
-  
-  // Bundle optimization
-  webpack: (config, { dev, isServer }) => {
-    // Optimize bundle size
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          minSize: 20000,
-          maxSize: 70000,
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-              priority: 10,
-              enforce: true,
-            },
-            ui: {
-              test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-              name: 'ui',
-              chunks: 'all',
-              priority: 20,
-            },
-            motion: {
-              test: /[\\/]node_modules[\\/](motion|framer-motion)[\\/]/,
-              name: 'motion',
-              chunks: 'all',
-              priority: 20,
-            },
-            commons: {
-              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
-              name: 'commons',
-              chunks: 'all',
-              priority: 30,
-            },
-          },
-        },
-        runtimeChunk: 'single',
-        minimizer: [...(config.optimization.minimizer || [])],
-      };
-    }
-
-    return config;
-  },
   
   async headers() {
     return [
