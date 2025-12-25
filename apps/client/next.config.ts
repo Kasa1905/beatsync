@@ -12,14 +12,6 @@ const nextConfig: NextConfig = {
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu'
     ],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
     optimizeCss: true, // Enable CSS optimization
     webpackBuildWorker: true, // Enable parallel builds
   },
