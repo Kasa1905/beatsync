@@ -10,7 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      NODE_ENV: production
       NEXT_PUBLIC_API_URL: https://example.com
       NEXT_PUBLIC_WS_URL: wss://example.com/ws
       NEXT_PUBLIC_POSTHOG_KEY: test

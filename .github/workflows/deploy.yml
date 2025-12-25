@@ -14,11 +14,11 @@ jobs:
       name: production
       
     env:
-      # Client Environment Variables
-      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-      NEXT_PUBLIC_WS_URL: ${{ secrets.NEXT_PUBLIC_WS_URL }}
-      NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
-      NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+      # Client Environment Variables (fallbacks if secrets missing)
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'https://example.com' }}
+      NEXT_PUBLIC_WS_URL: ${{ secrets.NEXT_PUBLIC_WS_URL || 'wss://example.com/ws' }}
+      NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY || 'test' }}
+      NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com' }}
       
       # Server Environment Variables
       PORT: ${{ secrets.PORT }}
@@ -50,12 +50,6 @@ jobs:
       run: bun install
         
     - name: Build and type check
-      env:
-        NODE_ENV: production
-        NEXT_PUBLIC_API_URL: https://example.com
-        NEXT_PUBLIC_WS_URL: wss://example.com/ws
-        NEXT_PUBLIC_POSTHOG_KEY: test
-        NEXT_PUBLIC_POSTHOG_HOST: https://app.posthog.com
       run: bun run build
         
     - name: Run tests
@@ -79,12 +73,6 @@ jobs:
       run: bun install
       
     - name: Build client
-      env:
-        NODE_ENV: production
-        NEXT_PUBLIC_API_URL: https://example.com
-        NEXT_PUBLIC_WS_URL: wss://example.com/ws
-        NEXT_PUBLIC_POSTHOG_KEY: test
-        NEXT_PUBLIC_POSTHOG_HOST: https://app.posthog.com
       run: cd apps/client && bun run build
       
     - name: Deploy to Vercel
