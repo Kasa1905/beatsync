@@ -20,7 +20,7 @@ export async function dispatchMessage({
 }: {
   ws: ServerWebSocket<WSData>;
   message: WSRequestType;
-  server: Server;
+  server: Server<any>;
 }): Promise<void> {
   const handler = WS_REGISTRY[message.type];
 

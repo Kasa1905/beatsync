@@ -3,7 +3,7 @@ import { Server } from "bun";
 import { errorResponse } from "../utils/responses";
 import { getPublicAudioUrl } from "../lib/r2";
 
-export const handleGetAudio = async (req: Request, _server: Server) => {
+export const handleGetAudio = async (req: Request, _server: Server<any>) => {
   try {
     // Check if it's a POST request
     if (req.method !== "POST") {

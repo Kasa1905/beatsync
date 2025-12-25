@@ -2,7 +2,7 @@ import { Server } from "bun";
 import { errorResponse } from "../utils/responses";
 import { WSData } from "../utils/websocket";
 
-export const handleWebSocketUpgrade = (req: Request, server: Server) => {
+export const handleWebSocketUpgrade = (req: Request, server: Server<WSData>) => {
   const url = new URL(req.url);
   const roomId = url.searchParams.get("roomId");
   const username = url.searchParams.get("username");

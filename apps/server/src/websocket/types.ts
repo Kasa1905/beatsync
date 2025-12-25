@@ -11,7 +11,7 @@ import { WSData } from "../utils/websocket";
 export type HandlerFunction<T = WSRequestType> = (data: {
   ws: ServerWebSocket<WSData>;
   message: T;
-  server: Server;
+  server: Server<any>;
 }) => Promise<void>;
 
 // Handler definition map type

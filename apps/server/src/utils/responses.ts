@@ -27,7 +27,7 @@ export const sendBroadcast = ({
   roomId,
   message,
 }: {
-  server: Server;
+  server: Server<any>;
   roomId: string;
   message: WSBroadcastType;
 }) => {

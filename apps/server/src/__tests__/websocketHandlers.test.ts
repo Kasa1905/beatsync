@@ -50,7 +50,7 @@ describe("WebSocket Handlers (Simplified Tests)", () => {
 
       const mockServer = {
         publish: mock(() => {}),
-      } as unknown as Server;
+      } as unknown as Server<any>;
 
       // Simulate client connection
       handleOpen(mockWs as any, mockServer);
@@ -85,7 +85,7 @@ describe("WebSocket Handlers (Simplified Tests)", () => {
 
       const mockServer = {
         publish: mock(() => {}),
-      } as unknown as Server;
+      } as unknown as Server<any>;
 
       // Simulate client connection
       handleOpen(mockWs as any, mockServer);
@@ -142,7 +142,7 @@ describe("WebSocket Handlers (Simplified Tests)", () => {
 
       const mockServer = {
         publish: mock(() => {}),
-      } as unknown as Server;
+      } as unknown as Server<any>;
 
       // Both clients connect
       handleOpen(mockWs1 as any, mockServer);
@@ -172,7 +172,7 @@ describe("WebSocket Handlers (Simplified Tests)", () => {
 
       const mockServer = {
         publish: mock(() => {}),
-      } as unknown as Server;
+      } as unknown as Server<any>;
 
       // Verify room doesn't exist yet
       expect(globalManager.hasRoom(roomId)).toBe(false);

@@ -454,7 +454,7 @@ export class RoomManager {
   /**
    * Reorder clients, moving the specified client to the front
    */
-  reorderClients(clientId: string, server: Server): ClientType[] {
+  reorderClients(clientId: string, server: Server<any>): ClientType[] {
     const clients = Array.from(this.clients.values());
     const clientIndex = clients.findIndex(
       (client) => client.clientId === clientId
@@ -484,7 +484,7 @@ export class RoomManager {
   /**
    * Move a client to a new position
    */
-  moveClient(clientId: string, position: PositionType, server: Server): void {
+  moveClient(clientId: string, position: PositionType, server: Server<any>): void {
     const client = this.clients.get(clientId);
     if (!client) return;
 
@@ -498,7 +498,7 @@ export class RoomManager {
   /**
    * Update the listening source position
    */
-  updateListeningSource(position: PositionType, server: Server): void {
+  updateListeningSource(position: PositionType, server: Server<any>): void {
     this.listeningSource = position;
     this._calculateGainsAndBroadcast(server);
   }
@@ -506,7 +506,7 @@ export class RoomManager {
   /**
    * Set global volume for all clients
    */
-  setGlobalVolume(volume: number, server: Server): void {
+  setGlobalVolume(volume: number, server: Server<any>): void {
     this.globalVolume = Math.max(0, Math.min(1, volume)); // Clamp 0-1
 
     sendBroadcast({
@@ -542,7 +542,7 @@ export class RoomManager {
   /**
    * Start spatial audio interval
    */
-  startSpatialAudio(server: Server): void {
+  startSpatialAudio(server: Server<any>): void {
     // Don't start if already running
     if (this.intervalId) return;
 
@@ -776,7 +776,7 @@ export class RoomManager {
   /**
    * Calculate gains and broadcast to all clients
    */
-  private _calculateGainsAndBroadcast(server: Server): void {
+  private _calculateGainsAndBroadcast(server: Server<any>): void {
     const clients = Array.from(this.clients.values());
 
     const gains = Object.fromEntries(

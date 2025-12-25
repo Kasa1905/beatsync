@@ -22,7 +22,7 @@ const createClientUpdate = (roomId: string) => {
   return message;
 };
 
-export const handleOpen = (ws: ServerWebSocket<WSData>, server: Server) => {
+export const handleOpen = (ws: ServerWebSocket<WSData>, server: Server<any>) => {
   console.log(
     `WebSocket connection opened for user ${ws.data.username} in room ${ws.data.roomId}`
   );
@@ -95,7 +95,7 @@ export const handleOpen = (ws: ServerWebSocket<WSData>, server: Server) => {
 export const handleMessage = async (
   ws: ServerWebSocket<WSData>,
   message: string | Buffer,
-  server: Server
+  server: Server<any>
 ) => {
   const t1 = epochNow(); // Always calculate this immediately
   const { roomId, username } = ws.data;
@@ -129,7 +129,7 @@ export const handleMessage = async (
 
 export const handleClose = async (
   ws: ServerWebSocket<WSData>,
-  server: Server
+  server: Server<any>
 ) => {
   try {
     console.log(

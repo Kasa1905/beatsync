@@ -77,7 +77,7 @@ export const handleGetPresignedURL = async (req: Request) => {
 };
 
 // Endpoint to confirm successful upload and broadcast to room
-export const handleUploadComplete = async (req: Request, server: Server) => {
+export const handleUploadComplete = async (req: Request, server: Server<any>) => {
   try {
     if (req.method !== "POST") {
       return errorResponse("Method not allowed", 405);
