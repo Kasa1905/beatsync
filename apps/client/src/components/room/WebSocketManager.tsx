@@ -108,7 +108,8 @@ export const WebSocketManager = ({
   });
 
   const createConnection = () => {
-    const SOCKET_URL = `${process.env.NEXT_PUBLIC_WS_URL}/ws?roomId=${roomId}&username=${username}&clientId=${clientId}`;
+    const SOCKET_BASE = process.env.NEXT_PUBLIC_WS_URL || "wss://example.com";
+    const SOCKET_URL = `${SOCKET_BASE}/ws?roomId=${roomId}&username=${username}&clientId=${clientId}`;
     console.log("Creating new WS connection to", SOCKET_URL, "- Fixed endpoint!");
 
     // Clear previous connection if it exists

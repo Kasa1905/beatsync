@@ -9,10 +9,7 @@ import {
 } from "@beatsync/shared";
 import axios from "axios";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-if (!BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not set");
-}
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const baseAxios = axios.create({
   baseURL: BASE_URL,
@@ -90,7 +87,7 @@ export const fetchAudio = async (url: string) => {
 
 export async function fetchDefaultAudioSources() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/default`);
+    const response = await fetch(`${BASE_URL}/default`);
 
     if (!response.ok) {
       console.error("Failed to fetch default audio sources:", response.status);
@@ -106,18 +103,14 @@ export async function fetchDefaultAudioSources() {
 }
 
 export async function fetchActiveRooms() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/active-rooms`
-  );
+  const response = await fetch(`${BASE_URL}/active-rooms`);
   const data: GetActiveRoomsType = await response.json();
   return data;
 }
 
 export async function fetchDiscoverRooms() {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/discover`
-    );
+    const response = await fetch(`${BASE_URL}/discover`);
     
     if (!response.ok) {
       console.error("Failed to fetch discover rooms:", response.status);
