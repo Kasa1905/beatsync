@@ -37,7 +37,6 @@
     "got": "^14.6.5",
     "hono": "^4.11.1",
     "http-cache-semantics": "^4.2.0",
-    "image-webpack-loader": "^8.1.0",
     "next": "^16.1.1",
     "posthog-node": "^5.18.0",
     "semver-regex": "^4.0.5",
