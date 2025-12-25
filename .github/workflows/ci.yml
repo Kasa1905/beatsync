@@ -26,5 +26,6 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build monorepo (skip server)
-        run: bunx turbo run build --filter='!server'
+      - name: Build client
+        working-directory: apps/client
+        run: bun run build
