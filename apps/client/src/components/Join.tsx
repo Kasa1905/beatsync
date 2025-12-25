@@ -250,7 +250,7 @@ export const Join = () => {
             >
               <div className="text-sm text-neutral-400">
                 You&apos;ll join as{" "}
-                <SafeMotion.SafeMotion.AnimatePresence mode="wait" initial={false}>
+                <SafeMotion.AnimatePresence mode="wait" initial={false}>
                   <SafeMotion.span
                     key={username}
                     className="text-primary font-medium inline-block"
@@ -272,7 +272,7 @@ export const Join = () => {
                   >
                     {username}
                   </SafeMotion.span>
-                </SafeMotion.SafeMotion.AnimatePresence>
+                  </SafeMotion.AnimatePresence>
               </div>
               <Button
                 type="button"

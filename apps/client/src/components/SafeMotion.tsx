@@ -1,32 +1,18 @@
 "use client";
-import { motion as MotionComponent, AnimatePresence as MotionAnimatePresence, type HTMLMotionProps } from "motion/react";
-import type { FC, ReactNode } from "react";
+import { motion, AnimatePresence } from "motion/react";
 
-interface AnimatePresenceProps {
-  children: ReactNode;
-}
-
-// Create optimized motion components with proper typing
-const createMotionComponent = <T extends keyof JSX.IntrinsicElements>(
-  Component: T
-): FC<HTMLMotionProps<T>> => {
-  const MotionComponent: FC<HTMLMotionProps<T>> = ({ children, ...props }) => {
-    return <Component {...props}>{children}</Component>;
-  };
-  MotionComponent.displayName = `SafeMotion.${Component}`;
-  return MotionComponent;
-};
-
-// Optimized SafeMotion components with proper typing
+// Re-export a curated set of motion components to keep usage consistent
 export const SafeMotion = {
-  div: createMotionComponent('div'),
-  h2: createMotionComponent('h2'),
-  p: createMotionComponent('p'),
-  span: createMotionComponent('span'),
-  circle: MotionComponent.circle,  // Add SVG circle support
-  AnimatePresence: MotionAnimatePresence  // Use the original AnimatePresence
+  a: motion.a,
+  button: motion.button,
+  div: motion.div,
+  h2: motion.h2,
+  p: motion.p,
+  path: motion.path,
+  span: motion.span,
+  svg: motion.svg,
+  circle: motion.circle,
+  AnimatePresence,
 };
 
-// Export optimized motion components
-export { MotionComponent as motion };
-export { MotionAnimatePresence as AnimatePresence };
+export { motion, AnimatePresence };
